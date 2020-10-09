@@ -1,11 +1,24 @@
 <form class="example-form">
     <mat-form-field class="example-full-width">
         <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="quellenFormControl"
-            [matAutocomplete]="auto"/>
+            [matAutocomplete]="auto" />
         <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let quelle of filteredQuellen | async" [value]="quelle.name">
                 {{quelle.name}}
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
+    <button *ngIf="needNewQuelle && !activationQuelleCreationEnabled" (click)="activateQuelleCreation($event)"
+        mat-icon-button color="primary">
+        <mat-icon>add_circle</mat-icon>
+    </button>
+    <mat-form-field *ngIf="activationQuelleCreationEnabled" class="example-full-width">
+        <input matInput placeholder="Autor">
+    </mat-form-field>
+    <button *ngIf="activationQuelleCreationEnabled" mat-icon-button color="primary">
+        <mat-icon>check_circle</mat-icon>
+    </button>
+    <button *ngIf="activationQuelleCreationEnabled" mat-icon-button color="primary">
+        <mat-icon>delete</mat-icon>
+    </button>
 </form>

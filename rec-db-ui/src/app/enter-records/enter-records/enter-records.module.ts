@@ -6,6 +6,7 @@ import { BackendService } from 'src/app/shared/services/backend.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [EnterRecordsComponent],
@@ -15,7 +16,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatFormFieldModule,
-    MatInputModule],
+    MatInputModule,
+    MatIconModule],
   exports: [EnterRecordsComponent],
   providers: [BackendService],
 })

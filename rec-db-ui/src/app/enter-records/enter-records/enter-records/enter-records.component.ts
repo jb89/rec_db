@@ -16,6 +16,8 @@ export class EnterRecordsComponent implements OnInit {
   quellen: Quelle[];
   filteredQuellen: Observable<Quelle[]>;
   quellenFormControl = new FormControl();
+  needNewQuelle = false;
+  activationQuelleCreationEnabled = false;
 
   constructor(private backendService: BackendService) {
     this.quellen = [new Quelle('q1', 'a1'), new Quelle('q2', 'a2')];
@@ -32,12 +34,26 @@ export class EnterRecordsComponent implements OnInit {
       this.quellen = data;
     });
     */
+    this.filteredQuellen.subscribe(filteredQuellen => {
+      if (filteredQuellen.length === 0) {
+        this.needNewQuelle = true;
+      } else {
+        this.needNewQuelle = false;
+      }
+    })
+
   }
 
   private _filterQuellen(value: string): Quelle[] {
+    console.log('value changed: ' + value);
     const filterValue = value.toLowerCase();
 
     return this.quellen.filter(quelle => quelle.name.toLowerCase().includes(filterValue));
+  }
+
+  private activateQuelleCreation(event: any): void {
+    console.log('button clicked')
+    this.activationQuelleCreationEnabled = true;
   }
 
 }
