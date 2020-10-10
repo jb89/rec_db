@@ -8,12 +8,12 @@ import { Quelle } from '../models/quelle';
   providedIn: 'root'
 })
 export class BackendService {
-  url = `localhost:8000/db_access`;
+  url = `http://localhost:8000/db_access`;
 
   constructor(private http: HttpClient) { }
 
-getQuellen(name: string): Observable<Quelle[]> {
-  return this.http.get<Quelle[]>(`${this.url}/get_quelle/${name}/`);
+getQuellen(): Observable<Quelle[]> {
+  return this.http.get<Quelle[]>(`${this.url}/get_quellen`);
 }
 
 }

@@ -25,6 +25,13 @@ def get_quelle(request, name):
     except Quelle.DoesNotExist:
         raise Http404("Does not exist")
 
+def get_quellen(request):
+    try:
+        data = list(Quelle.objects.values())
+        return JsonResponse(data, safe=False)
+    except Quelle.DoesNotExist:
+        raise Http404("Does not exist")
+
 def put_rezept(request, name):
     r = Rezept(name=name)
     r.save()

@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('put_quelle/<str:name>/<str:autor>/', views.put_quelle, name='put_quelle'),
     path('get_quelle/<str:name>/', views.get_quelle, name='get_quelle'),
+    path('get_quellen', views.get_quellen, name='get_quellen'),
     path('put_rezept/<str:name>/', views.put_rezept, name='put_rezept'),
     path('get_rezept/<str:name>/', views.get_rezept, name='get_rezept'),
     path('put_zutat/<str:name>/', views.put_zutat, name='put_zutat'),

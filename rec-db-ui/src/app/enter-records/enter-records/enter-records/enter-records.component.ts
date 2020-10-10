@@ -5,7 +5,6 @@ import { Quelle } from 'src/app/shared/models/quelle';
 import { BackendService } from 'src/app/shared/services/backend.service';
 import { map, startWith } from 'rxjs/operators';
 
-
 @Component({
   selector: 'app-enter-records',
   templateUrl: './enter-records.component.html',
@@ -13,7 +12,7 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class EnterRecordsComponent implements OnInit {
 
-  quellen: Quelle[];
+  quellen: Quelle[] = [];
   filteredQuellen: Observable<Quelle[]>;
   quellenFormControl = new FormControl();
   needNewQuelle = false;
@@ -22,10 +21,14 @@ export class EnterRecordsComponent implements OnInit {
   quelleAutorInput = '';
 
   constructor(private backendService: BackendService) {
-    this.quellen = [new Quelle('q1', 'a1'), new Quelle('q2', 'a2')];
   }
 
   ngOnInit(): void {
+    this.backendService.getQuellen().subscribe(quellen => {
+      this.quellen = quellen;
+      this.quellenFormControl.setValue('');
+    });
+
     this.filteredQuellen = this.quellenFormControl.valueChanges
       .pipe(
         startWith(''),
@@ -34,10 +37,7 @@ export class EnterRecordsComponent implements OnInit {
 
     this.quelleAutorFormControl.valueChanges.subscribe(value => this.quelleAutorInput = value);
 
-    /*this.backendService.getQuellen(`all`).subscribe(data => {
-      this.quellen = data;
-    });
-    */
+
     this.filteredQuellen.subscribe(filteredQuellen => {
       if (filteredQuellen.length === 0) {
         this.needNewQuelle = true;
