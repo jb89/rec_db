@@ -18,6 +18,8 @@ export class EnterRecordsComponent implements OnInit {
   quellenFormControl = new FormControl();
   needNewQuelle = false;
   activationQuelleCreationEnabled = false;
+  quelleAutorFormControl = new FormControl();
+  quelleAutorInput = '';
 
   constructor(private backendService: BackendService) {
     this.quellen = [new Quelle('q1', 'a1'), new Quelle('q2', 'a2')];
@@ -29,6 +31,8 @@ export class EnterRecordsComponent implements OnInit {
         startWith(''),
         map(value => this._filterQuellen(value))
       );
+
+    this.quelleAutorFormControl.valueChanges.subscribe(value => this.quelleAutorInput = value);
 
     /*this.backendService.getQuellen(`all`).subscribe(data => {
       this.quellen = data;
@@ -45,15 +49,21 @@ export class EnterRecordsComponent implements OnInit {
   }
 
   private _filterQuellen(value: string): Quelle[] {
-    console.log('value changed: ' + value);
     const filterValue = value.toLowerCase();
 
     return this.quellen.filter(quelle => quelle.name.toLowerCase().includes(filterValue));
   }
 
-  private activateQuelleCreation(event: any): void {
-    console.log('button clicked')
+  activateQuelleCreation(event: any): void {
     this.activationQuelleCreationEnabled = true;
+  }
+
+  addNewQuelle(event: any): void {
+    console.log(`creating new Quelle for AUthor ${this.quelleAutorInput}`);
+  }
+
+  abortQuelleCreation(event: any): void {
+    this.activationQuelleCreationEnabled = false;
   }
 
 }
