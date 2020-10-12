@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EnterRecordsModule } from './enter-records/enter-records/enter-records.module';
 import { ReadRecordsModule } from './read-records/read-records/read-records.module';
+import { InputAutocompleteComponent } from './enter-records/enter-records/input-autocomplete/input-autocomplete.component';
 
 
 @NgModule({

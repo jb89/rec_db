@@ -16,4 +16,8 @@ getQuellen(): Observable<Quelle[]> {
   return this.http.get<Quelle[]>(`${this.url}/get_quellen`);
 }
 
+createQuelle(quelle: Quelle): Observable<Quelle> {
+  return this.http.get<Quelle>(`${this.url}/put_quelle/${quelle.name}/${quelle.autor}`);
+}
+
 }

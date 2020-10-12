@@ -13,45 +13,43 @@ import { map, startWith } from 'rxjs/operators';
 export class EnterRecordsComponent implements OnInit {
 
   quellen: Quelle[] = [];
-  filteredQuellen: Observable<Quelle[]>;
-  quellenFormControl = new FormControl();
+  quellenNames: string[];
+  quelleNameInput = '';
   needNewQuelle = false;
   activationQuelleCreationEnabled = false;
   quelleAutorFormControl = new FormControl();
   quelleAutorInput = '';
+  quelleOk = false;
 
   constructor(private backendService: BackendService) {
   }
 
   ngOnInit(): void {
     this.backendService.getQuellen().subscribe(quellen => {
+      this.quellenNames = quellen.map(q => q.name);
+      console.log(this.quellenNames);
       this.quellen = quellen;
-      this.quellenFormControl.setValue('');
     });
 
-    this.filteredQuellen = this.quellenFormControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filterQuellen(value))
-      );
-
     this.quelleAutorFormControl.valueChanges.subscribe(value => this.quelleAutorInput = value);
-
-
-    this.filteredQuellen.subscribe(filteredQuellen => {
-      if (filteredQuellen.length === 0) {
-        this.needNewQuelle = true;
-      } else {
-        this.needNewQuelle = false;
-      }
-    })
-
   }
 
-  private _filterQuellen(value: string): Quelle[] {
-    const filterValue = value.toLowerCase();
-
-    return this.quellen.filter(quelle => quelle.name.toLowerCase().includes(filterValue));
+  /**
+   * Input-Child-Componet either sends undefined or single value of chosen Quelle. This method decides,
+   * if we have to create a new Quelle or not.
+   * @param quelle quelle from Child-Component. 
+   */
+  setQuelle(quelle: string): void {
+    if (quelle === undefined) {
+      return;
+    }
+    console.log(`chosen quelle: ${quelle}`);
+    this.quellenNames = this.quellen.map(q => q.name);
+    if (this.quellenNames.includes(quelle)) {
+      console.log('new quelle exists');
+    } else {
+      console.log('new quelle is necessary');
+    }
   }
 
   activateQuelleCreation(event: any): void {
@@ -59,8 +57,17 @@ export class EnterRecordsComponent implements OnInit {
   }
 
   addNewQuelle(event: any): void {
-    console.log(`creating new Quelle for AUthor ${this.quelleAutorInput}`);
+    const q = new Quelle(this.quelleNameInput, this.quelleAutorInput);
+    this.backendService.createQuelle(q).subscribe(createdObj => {
+      if (createdObj.name === this.quelleNameInput) {
+        this.quelleOk = true;
+        this.quelleAutorFormControl.disable();
+      } else {
+        this.quelleOk = false;
+      }
+    });
   }
+
 
   abortQuelleCreation(event: any): void {
     this.activationQuelleCreationEnabled = false;

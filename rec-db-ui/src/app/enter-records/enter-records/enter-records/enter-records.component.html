@@ -1,24 +1,20 @@
 <form class="example-form">
-    <mat-form-field class="example-full-width">
-        <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="quellenFormControl"
-            [matAutocomplete]="auto" />
-        <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let quelle of filteredQuellen | async" [value]="quelle.name">
-                {{quelle.name}}
-            </mat-option>
-        </mat-autocomplete>
-    </mat-form-field>
+    <p>Wähle Quelle</p>
+    <app-input-autocomplete *ngIf="quellenNames !== undefined" [allEntries]="quellenNames" (chosenEntry)="setQuelle($event)"></app-input-autocomplete>
     <button *ngIf="needNewQuelle && !activationQuelleCreationEnabled" (click)="activateQuelleCreation($event)"
         mat-icon-button color="primary">
         <mat-icon>add_circle</mat-icon>
     </button>
+    <button *ngIf="quelleOk" mat-icon-button color="primary" disabled="quelleOk">
+        <mat-icon>check_circle</mat-icon>
+    </button>
     <mat-form-field *ngIf="activationQuelleCreationEnabled" class="example-full-width">
         <input matInput placeholder="Autor" [formControl]="quelleAutorFormControl">
     </mat-form-field>
-    <button *ngIf="activationQuelleCreationEnabled" (click)="addNewQuelle($event)" mat-icon-button color="primary">
-        <mat-icon>check_circle</mat-icon>
+    <button *ngIf="activationQuelleCreationEnabled && !quelleOk" (click)="addNewQuelle($event)" mat-icon-button color="primary">
+        <mat-icon>send</mat-icon>
     </button>
-    <button *ngIf="activationQuelleCreationEnabled" (click)="abortQuelleCreation($event)" mat-icon-button color="primary">
+    <button *ngIf="activationQuelleCreationEnabled" (click)="abortQuelleCreation($event)" [disabled]=quelleOk mat-icon-button color="primary">
         <mat-icon>delete</mat-icon>
     </button>
 </form>
