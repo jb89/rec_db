@@ -11,9 +11,10 @@ import { InputAutocompleteComponent } from './input-autocomplete/input-autocompl
 import { EnterQuelleComponent } from './enter-quelle/enter-quelle.component';
 import { EnterRezepteComponent } from './enter-rezepte/enter-rezepte.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { EnterZutatenComponent } from './enter-zutaten/enter-zutaten.component';
 
 @NgModule({
-  declarations: [EnterRecordsComponent, InputAutocompleteComponent, EnterQuelleComponent, EnterRezepteComponent],
+  declarations: [EnterRecordsComponent, InputAutocompleteComponent, EnterQuelleComponent, EnterRezepteComponent, EnterZutatenComponent],
   imports: [
     CommonModule,
     FormsModule,
