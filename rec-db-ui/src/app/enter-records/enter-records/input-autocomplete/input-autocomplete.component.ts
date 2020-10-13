@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Quelle } from 'src/app/shared/models/quelle';
-import { BackendService } from 'src/app/shared/services/backend.service';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -11,39 +9,48 @@ import { map, startWith } from 'rxjs/operators';
   styleUrls: ['./input-autocomplete.component.css']
 })
 export class InputAutocompleteComponent implements OnInit {
+  @Input() allEntries: string[];
+  @Input() placeholder: string;
+  @Input() mandatory: boolean;
+  @Output() chosenEntry = new EventEmitter();
 
   formControl = new FormControl();
-  filteredEntries: Observable<string[]>;
+  filteredEntriesObs: Observable<string[]>;
+  inputOk: boolean;
 
-  @Input() allEntries: string[];
-  @Output() chosenEntry = new EventEmitter();
   input = '';
 
   constructor() { }
 
   ngOnInit(): void {
-    this.filteredEntries = this.formControl.valueChanges
-    .pipe(
-      startWith(''),
-      map(value => {
-        this.input = value;
-        return this._filterEntry(value);
-      })
-    );
+    this.filteredEntriesObs = this.formControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => {
+          this.input = value;
+          return this._filterEntry(value);
+        })
+      );
+
+    this.mandatory ? this.inputOk = false : this.inputOk = true;
   }
 
   private _filterEntry(value: string): string[] {
-    const filtered: string[] = this.allEntries.filter(entry => entry.toLowerCase().includes(value.toLowerCase()));
-    if (filtered.length < 2) {
-      this._emitEntry(value);
+    return this.allEntries.filter(entry => entry.toLowerCase().includes(value.toLowerCase()));
+  }
+
+  /**
+   * When focusing out of inputfield, this method emits value
+   */
+  focusOut(): void {
+    if (this.input.length > 0) {
+      this.inputOk = true;
+      this.chosenEntry.emit(this.input);
     } else {
-      this._emitEntry(undefined);
+      if (this.mandatory) {
+        this.inputOk = false;
+      }
+      this.chosenEntry.emit(undefined);
     }
-    return filtered;
   }
-
-  private _emitEntry(value: string): void {
-    this.chosenEntry.emit(value);
-  }
-
 }

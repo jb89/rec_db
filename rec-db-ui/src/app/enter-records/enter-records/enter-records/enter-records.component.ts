@@ -16,10 +16,13 @@ export class EnterRecordsComponent implements OnInit {
   quellenNames: string[];
   quelleNameInput = '';
   needNewQuelle = false;
-  activationQuelleCreationEnabled = false;
+  quelleCreationEnabled = false;
+  quelleCreationPossible = false;
+
+  quellenAutoren: string[];
   quelleAutorFormControl = new FormControl();
   quelleAutorInput = '';
-  quelleOk = false;
+  quelleChosen = false;
 
   constructor(private backendService: BackendService) {
   }
@@ -27,7 +30,8 @@ export class EnterRecordsComponent implements OnInit {
   ngOnInit(): void {
     this.backendService.getQuellen().subscribe(quellen => {
       this.quellenNames = quellen.map(q => q.name);
-      console.log(this.quellenNames);
+      const allAutoren = quellen.map(q => q.autor);
+      this.quellenAutoren = allAutoren.filter((name, i) => allAutoren.indexOf(name) === i);
       this.quellen = quellen;
     });
 
@@ -37,40 +41,48 @@ export class EnterRecordsComponent implements OnInit {
   /**
    * Input-Child-Componet either sends undefined or single value of chosen Quelle. This method decides,
    * if we have to create a new Quelle or not.
-   * @param quelle quelle from Child-Component. 
+   * @param quelle quelle from Child-Component.
    */
   setQuelle(quelle: string): void {
+    this.quelleNameInput = quelle;
     if (quelle === undefined) {
-      return;
-    }
-    console.log(`chosen quelle: ${quelle}`);
-    this.quellenNames = this.quellen.map(q => q.name);
-    if (this.quellenNames.includes(quelle)) {
-      console.log('new quelle exists');
+      this.abortQuelleCreation();
+      this.needNewQuelle = false;
     } else {
-      console.log('new quelle is necessary');
+      this.needNewQuelle = this.quellenNames.includes(quelle) ? false : true;
+    }
+    console.log(`New Quelle=${quelle}, needs new creation? ${this.needNewQuelle}`);
+  }
+
+  setQuelleCreationAutor(autor: string): void {
+    this.quelleAutorInput = autor;
+    if (autor !== undefined) {
+      this.quelleCreationPossible = true;
+    } else {
+      this.quelleCreationPossible = false;
     }
   }
 
   activateQuelleCreation(event: any): void {
-    this.activationQuelleCreationEnabled = true;
+    this.quelleCreationEnabled = true;
   }
 
   addNewQuelle(event: any): void {
     const q = new Quelle(this.quelleNameInput, this.quelleAutorInput);
     this.backendService.createQuelle(q).subscribe(createdObj => {
-      if (createdObj.name === this.quelleNameInput) {
-        this.quelleOk = true;
-        this.quelleAutorFormControl.disable();
-      } else {
-        this.quelleOk = false;
-      }
+      this.finalizeSettingQuelle();
     });
   }
 
+  abortQuelleCreation(): void {
+    this.quelleCreationEnabled = false;
+  }
 
-  abortQuelleCreation(event: any): void {
-    this.activationQuelleCreationEnabled = false;
+  finalizeSettingQuelle(): void {
+    this.quelleChosen = true;
+    console.log('finalizing setting quele');
+    
+    // Emit set Quelle.
   }
 
 }

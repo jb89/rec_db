@@ -1,11 +1,13 @@
 <form class="example-form">
-    <mat-form-field class="example-full-width">
-        <input type="text" placeholder="Name" aria-label="Number" matInput [formControl]="formControl"
-            [matAutocomplete]="auto"/>
+    <mat-form-field (focusout)="focusOut()" class="example-full-width">
+        <input type="text" placeholder="{{placeholder}}" aria-label="Number" matInput [formControl]="formControl"
+            [matAutocomplete]="auto" />
         <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let entry of filteredEntries | async" [value]="entry">
+            <mat-option *ngFor="let entry of filteredEntriesObs | async" [value]="entry">
                 {{entry}}
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
+    <mat-icon class="small-icon" *ngIf="!inputOk">highlight_off</mat-icon>
+    <mat-icon class="small-icon" *ngIf="inputOk">check_circle_outline</mat-icon>
 </form>
