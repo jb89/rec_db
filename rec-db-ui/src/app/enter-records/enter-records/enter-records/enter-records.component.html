@@ -1,19 +1,10 @@
-<form class="example-form">
-    <p>Wähle Quelle</p>
-    <app-input-autocomplete *ngIf="quellenNames !== undefined" [placeholder]="'Name'" [mandatory]="true" [allEntries]="quellenNames" (chosenEntry)="setQuelle($event)"></app-input-autocomplete>
-    <button *ngIf="needNewQuelle && !quelleCreationEnabled" (click)="activateQuelleCreation($event)"
-        mat-icon-button color="primary">
-        <mat-icon>add_circle</mat-icon>
-    </button>
-
-    <app-input-autocomplete *ngIf="quelleCreationEnabled" [placeholder]="'Autor'" [mandatory]="true" [allEntries]="quellenAutoren" (chosenEntry)="setQuelleCreationAutor($event)"></app-input-autocomplete>
-    <button *ngIf="quelleCreationEnabled" [disabled]="!quelleCreationPossible || quelleChosen" (click)="addNewQuelle($event)" mat-icon-button color="primary">
-        <mat-icon>send</mat-icon>
-    </button>
-    <button *ngIf="!needNewQuelle && !quelleCreationEnabled" [disabled]="quelleNameInput === undefined || quelleNameInput.length === 0" (click)="finalizeSettingQuelle($event)" mat-icon-button color="primary">
-        <mat-icon>check_circle_outline</mat-icon>
-    </button>
-    <button *ngIf="quelleCreationEnabled" [disabled]="quelleChosen" (click)="abortQuelleCreation($event)" mat-icon-button color="primary">
-        <mat-icon>delete</mat-icon>
-    </button>
-</form>
+<div><app-enter-quelle *ngIf="!quelle" (chosenQuelle)="setQuelle($event)"></app-enter-quelle></div>
+<div *ngIf="quelle">
+    <p>Eintragen für Quelle: {{quelle.name}},</p>
+    <p>von: {{quelle.autor}}</p>
+    <h3>Was soll Eingetragen werden?</h3>
+    <mat-tab-group>
+        <mat-tab label="Rezepte">rezepte</mat-tab>
+        <mat-tab label="Zutaten">zutaten</mat-tab>
+    </mat-tab-group>
+</div>

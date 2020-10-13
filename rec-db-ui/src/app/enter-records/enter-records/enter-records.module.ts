@@ -8,9 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { InputAutocompleteComponent } from './input-autocomplete/input-autocomplete.component';
+import { EnterQuelleComponent } from './enter-quelle/enter-quelle.component';
+import { EnterRezepteComponent } from './enter-rezepte/enter-rezepte.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
-  declarations: [EnterRecordsComponent, InputAutocompleteComponent],
+  declarations: [EnterRecordsComponent, InputAutocompleteComponent, EnterQuelleComponent, EnterRezepteComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -18,7 +21,9 @@ import { InputAutocompleteComponent } from './input-autocomplete/input-autocompl
     MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule],
+    MatIconModule,
+    MatTabsModule
+  ],
   exports: [EnterRecordsComponent],
   providers: [BackendService],
 })
