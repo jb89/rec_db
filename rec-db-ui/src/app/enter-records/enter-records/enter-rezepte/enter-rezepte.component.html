@@ -39,7 +39,11 @@
         <tr mat-row *matRowDef="let row; columns: displayedRezepteColumns;"></tr>
     </table>
     <h5>Welche Rezepte sollen zugeordnet werden?</h5>
-    
+    <button *ngIf="isRezeptCreationReady()" (click)="activateRezeptCreation($event)" mat-icon-button color="primary">
+        <mat-icon>add_circle</mat-icon>
+    </button>
+    <app-input-autocomplete *ngIf="isRezeptCreationOngoing() && allRezepteNames !== undefined" [placeholder]="'Rezept'" [mandatory]="true"
+        [allEntries]="allRezepteNames" (chosenEntry)="setRezept($event)"></app-input-autocomplete>
 
 
 

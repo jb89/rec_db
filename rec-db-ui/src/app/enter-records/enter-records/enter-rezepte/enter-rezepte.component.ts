@@ -1,9 +1,11 @@
+import { RezeptCreationState } from './rezept-creation-state.enum';
 import { BackendService } from './../../../shared/services/backend.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { Quelle } from 'src/app/shared/models/quelle';
 import { Zutat } from 'src/app/shared/models/zutat';
 import { throwError } from 'rxjs';
 import { RezeptZutatQuelle } from 'src/app/shared/models/rezept-zutat-quelle';
+import { Rezept } from 'src/app/shared/models/rezept';
 
 @Component({
   selector: 'app-enter-rezepte',
@@ -24,6 +26,10 @@ export class EnterRezepteComponent implements OnInit {
 
   preSetRezepte: RezeptZutatQuelle[];
   displayedRezepteColumns: string[] = ['rezeptName', 'stelle'];
+  allRezepte: Rezept[];
+  allRezepteNames: string[];
+
+  rezeptCreationState = RezeptCreationState.ready;
 
   constructor(private backendService: BackendService) { }
 
@@ -71,8 +77,30 @@ export class EnterRezepteComponent implements OnInit {
     console.log('chosen Zutat: ', this.chosenZutat);
     this.backendService.getRezepteForQuelleAndZutat(this.quelle.id, this.chosenZutat.id).subscribe(rezepte => {
       this.preSetRezepte = rezepte;
+      this.backendService.getRezepte().subscribe(rezepte => {
+        this.allRezepte = rezepte;
+        this.allRezepteNames = rezepte//
+          .map(r => r.name)//
+          .filter(rn => !this.preSetRezepte.find(r => r.rezeptName === rn));
+      });
       console.log('found rezepte: ', rezepte);
     });
+  }
+
+  isRezeptCreationReady(): boolean {
+    return this.rezeptCreationState === RezeptCreationState.ready;
+  }
+
+  isRezeptCreationOngoing(): boolean {
+    return this.rezeptCreationState === RezeptCreationState.ongoing;
+  }
+
+  activateRezeptCreation(): void {
+    this.rezeptCreationState = RezeptCreationState.ongoing;
+  }
+
+  setRezept(r: string) {
+    console.log('set rezept: ', r);
   }
 
 }

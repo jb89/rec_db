@@ -38,12 +38,13 @@ def put_rezept(request, name):
     r.save()
     return JsonResponse(model_to_dict(r))
 
-def get_rezept(request, name):
+def get_rezepte(request):
     try:
-        r = Rezept.objects.get(name=name)
-        return JsonResponse(model_to_dict(r))
+        data = list(Rezept.objects.values())
+        return JsonResponse(data, safe=False)
     except Rezept.DoesNotExist:
-        raise Http404("Does not exist")    
+        raise Http404("Does not exist")
+ 
 
 def put_zutat(request, name):
     z = Zutat(name = name)
