@@ -12,6 +12,7 @@ export class InputAutocompleteComponent implements OnInit {
   @Input() allEntries: string[];
   @Input() placeholder: string;
   @Input() mandatory: boolean;
+  @Input() disabled?: boolean;
   @Output() chosenEntry = new EventEmitter();
 
   formControl = new FormControl();
@@ -23,16 +24,21 @@ export class InputAutocompleteComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.filteredEntriesObs = this.formControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => {
-          this.input = value;
-          return this._filterEntry(value);
-        })
-      );
+    if (this.disabled) {
+      this._disableInput();
+    } else {
+      this.filteredEntriesObs = this.formControl.valueChanges
+        .pipe(
+          startWith(''),
+          map(value => {
+            this.input = value;
+            return this._filterEntry(value);
+          })
+        );
+    }
 
     this.mandatory ? this.inputOk = false : this.inputOk = true;
+
   }
 
   private _filterEntry(value: string): string[] {
@@ -52,5 +58,9 @@ export class InputAutocompleteComponent implements OnInit {
       }
       this.chosenEntry.emit(undefined);
     }
+  }
+
+  private _disableInput(): void {
+    this.formControl.disable();
   }
 }

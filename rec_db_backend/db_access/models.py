@@ -27,4 +27,4 @@ class RezeptQuelle(models.Model):
 class ZutatRezept(models.Model):
     zutat_fk = models.ForeignKey(Zutat, on_delete=models.CASCADE)
     rezept_fk = models.ForeignKey(Rezept, on_delete=models.CASCADE)
-    menge = models.CharField(max_length=20)
+    menge = models.CharField(max_length=20, null=True)

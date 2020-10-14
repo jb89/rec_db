@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import connection
 from django.forms.models import model_to_dict
+import json
 
-from .models import Zutat, Quelle
+from .models import Zutat, Quelle, Rezept, RezeptQuelle
 
 # Create your views here.
 def index(request):
@@ -56,6 +57,13 @@ def get_zutat(request, name):
     except Zutat.DoesNotExist:
         raise Http404("Does not exist")
 
+def get_zutaten(request):
+    try:
+        data = list(Zutat.objects.values())
+        return JsonResponse(data, safe=False)
+    except Zutat.DoesNotExist:
+        raise Http404("Does not exist")
+
 def put_zutat_rezept(request, zutat_id, rezept_id, menge):
     # Todo
     return HttpResponse()
@@ -63,3 +71,16 @@ def put_zutat_rezept(request, zutat_id, rezept_id, menge):
 def put_rezept_quelle(request, rezept_id, quelle_id, stelle):
     # Todo
     return HttpResponse()
+
+def get_rezepte_for_quelle_and_zutat(request, quelle_id, zutat_id):
+    qry2 = 'select r.id as rezeptId, r.name as rezeptName, rq.stelle as stelle \
+    from db_access_rezept r \
+    join db_access_rezeptquelle rq on r.id = rq.rezept_fk_id \
+    join db_access_zutatrezept zr on r.id = zr.rezept_fk_id'
+
+    cursor = connection.cursor().execute(qry2)
+    columns = [column[0] for column in cursor.description]
+    results = []
+    for row in cursor.fetchall():
+        results.append(dict(zip(columns, row)))
+    return JsonResponse(results, safe=False)

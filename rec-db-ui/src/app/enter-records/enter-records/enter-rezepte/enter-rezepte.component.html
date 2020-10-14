@@ -1,1 +1,46 @@
-<p>enter-rezepte works!</p>
+<form *ngIf="!zutatChosen">
+    <p>Wähle Zutat, zu welcher Rezepte eingetragen werden sollen</p>
+    <app-input-autocomplete *ngIf="allZutatenNames !== undefined" [placeholder]="'Zutat'" [mandatory]="true"
+        [allEntries]="allZutatenNames" (chosenEntry)="setZutat($event)"></app-input-autocomplete>
+    <button *ngIf="needNewZutat && !zutatCreationEnabled" (click)="activateZutatCreation($event)" mat-icon-button
+        color="primary">
+        <mat-icon>add_circle</mat-icon>
+    </button>
+    <button *ngIf="zutatCreationEnabled" [disabled]="chosenZutat" (click)="addNewZutat($event)" mat-icon-button
+        color="primary">
+        <mat-icon>send</mat-icon>
+    </button>
+    <button *ngIf="!needNewZutat && !zutatCreationEnabled"
+        [disabled]="zutatNameInput === undefined || zutatNameInput.length === 0" (click)="finalizeSettingZutat($event)"
+        mat-icon-button color="primary">
+        <mat-icon>check_circle_outline</mat-icon>
+    </button>
+    <button *ngIf="zutatCreationEnabled" [disabled]="chosenZutat" (click)="abortZutatCreation($event)" mat-icon-button
+        color="primary">
+        <mat-icon>delete</mat-icon>
+    </button>
+</form>
+<div *ngIf="zutatChosen">
+    <h3>Eintragen für Zutat: {{chosenZutat.name}}</h3>
+    <h3>in Quelle: {{quelle.name}}</h3>
+    <h5>Bereits zugeordnete Rezepte:</h5>
+    <table mat-table [dataSource]="preSetRezepte">
+        <!-- Name Column -->
+        <ng-container matColumnDef="rezeptName">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.rezeptName}} </td>
+        </ng-container>
+        <!-- Stelle Column -->
+        <ng-container matColumnDef="stelle">
+            <th mat-header-cell *matHeaderCellDef> Stelle </th>
+            <td mat-cell *matCellDef="let element"> {{element.stelle}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedRezepteColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedRezepteColumns;"></tr>
+    </table>
+    <h5>Welche Rezepte sollen zugeordnet werden?</h5>
+    
+
+
+
+</div>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Quelle } from 'src/app/shared/models/quelle';
 
 @Component({
   selector: 'app-enter-zutaten',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./enter-zutaten.component.css']
 })
 export class EnterZutatenComponent implements OnInit {
+
+  @Input() quelle: Quelle;
 
   constructor() { }
 

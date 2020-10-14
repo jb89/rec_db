@@ -70,8 +70,7 @@ export class EnterQuelleComponent implements OnInit {
   }
 
   addNewQuelle(event: any): void {
-    const q = new Quelle(this.quelleNameInput, this.quelleAutorInput);
-    this.backendService.createQuelle(q).subscribe(createdObj => {
+    this.backendService.createQuelle(this.quelleNameInput, this.quelleAutorInput).subscribe(createdObj => {
       this._emitQuelle(createdObj);
     });
   }
@@ -82,8 +81,6 @@ export class EnterQuelleComponent implements OnInit {
 
   finalizeSettingQuelle(): void {
     this.quelleChosen = true;
-    console.log('finalizing setting quele for: ', this.quelleNameInput);
-    console.log('all quellen: ', this.quellen);
     const chosenQuelle = this.quellen.find(q => q.name === this.quelleNameInput);
     if (chosenQuelle === undefined) {
       throwError('Error: Chosen Quelle can not be undefined!');

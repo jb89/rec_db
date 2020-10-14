@@ -11,6 +11,7 @@ import { InputAutocompleteComponent } from './input-autocomplete/input-autocompl
 import { EnterQuelleComponent } from './enter-quelle/enter-quelle.component';
 import { EnterRezepteComponent } from './enter-rezepte/enter-rezepte.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
 import { EnterZutatenComponent } from './enter-zutaten/enter-zutaten.component';
 
 @NgModule({
@@ -23,7 +24,8 @@ import { EnterZutatenComponent } from './enter-zutaten/enter-zutaten.component';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTableModule
   ],
   exports: [EnterRecordsComponent],
   providers: [BackendService],
