@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EnterRecordsModule } from './enter-records/enter-records/enter-records.module';
 import { ReadRecordsModule } from './read-records/read-records/read-records.module';
+import { DisplayRezepteComponent } from './shared/display-rezepte/display-rezepte.component';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -19,6 +21,7 @@ import { ReadRecordsModule } from './read-records/read-records/read-records.modu
     BrowserAnimationsModule,
     EnterRecordsModule,
     ReadRecordsModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent],

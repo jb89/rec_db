@@ -4,7 +4,7 @@ from django.db import connection
 from django.forms.models import model_to_dict
 import json
 
-from .models import Zutat, Quelle, Rezept, RezeptQuelle
+from .models import Zutat, Quelle, Rezept, RezeptQuelle, ZutatRezept
 
 # Create your views here.
 def index(request):
@@ -85,3 +85,16 @@ def get_rezepte_for_quelle_and_zutat(request, quelle_id, zutat_id):
     for row in cursor.fetchall():
         results.append(dict(zip(columns, row)))
     return JsonResponse(results, safe=False)
+
+def set_rezepte_for_quelle_and_zutat(request, rezept_id, quelle_id, zutat_id, stelle):
+    r = Rezept.objects.get(id = rezept_id)
+    q = Quelle.objects.get(id = quelle_id)
+    z = Zutat.objects.get(id = zutat_id)
+    rq = RezeptQuelle(quelle_fk = q, rezept_fk = r, stelle = stelle)
+    rq.save()
+    zr = ZutatRezept(rezept_fk = r, zutat_fk = z)
+    zr.save()
+    returnDict = model_to_dict(rq)
+    returnDict['rezeptName'] = r.name
+    returnDict['quelleName'] = q.name
+    return JsonResponse(returnDict)

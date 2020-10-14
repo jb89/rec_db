@@ -1,3 +1,4 @@
+import { DisplayRezepteComponent } from './../../shared/display-rezepte/display-rezepte.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,8 +12,8 @@ import { InputAutocompleteComponent } from './input-autocomplete/input-autocompl
 import { EnterQuelleComponent } from './enter-quelle/enter-quelle.component';
 import { EnterRezepteComponent } from './enter-rezepte/enter-rezepte.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTableModule } from '@angular/material/table';
 import { EnterZutatenComponent } from './enter-zutaten/enter-zutaten.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [EnterRecordsComponent, InputAutocompleteComponent, EnterQuelleComponent, EnterRezepteComponent, EnterZutatenComponent],
@@ -25,7 +26,7 @@ import { EnterZutatenComponent } from './enter-zutaten/enter-zutaten.component';
     MatInputModule,
     MatIconModule,
     MatTabsModule,
-    MatTableModule
+    SharedModule
   ],
   exports: [EnterRecordsComponent],
   providers: [BackendService],

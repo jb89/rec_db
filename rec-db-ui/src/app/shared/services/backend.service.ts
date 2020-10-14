@@ -1,10 +1,11 @@
+import { RezeptZutatQuelle } from 'src/app/shared/models/rezept-zutat-quelle';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Quelle } from '../models/quelle';
 import { Zutat } from '../models/zutat';
 import { Rezept } from '../models/rezept';
-import { RezeptZutatQuelle } from '../models/rezept-zutat-quelle';
+import { RezeptStelle } from '../models/rezept-stelle';
 
 
 @Injectable({
@@ -31,11 +32,19 @@ export class BackendService {
     return this.http.get<Quelle>(`${this.url}/put_zutat/${zutatName}`);
   }
 
-  getRezepteForQuelleAndZutat(quelleId: number, zutatId: number): Observable<RezeptZutatQuelle[]> {
-    return this.http.get<RezeptZutatQuelle[]>(`${this.url}/get_rezepte_for_quelle_and_zutat/${quelleId}/${zutatId}`);
+  getRezepteForQuelleAndZutat(quelleId: number, zutatId: number): Observable<RezeptStelle[]> {
+    return this.http.get<RezeptStelle[]>(`${this.url}/get_rezepte_for_quelle_and_zutat/${quelleId}/${zutatId}`);
   }
 
   getRezepte(): Observable<Rezept[]> {
     return this.http.get<Rezept[]>(`${this.url}/get_rezepte`);
+  }
+
+  createRezept(rezeptName: string): Observable<Rezept> {
+    return this.http.get<Rezept>(`${this.url}/put_rezept/${rezeptName}`);
+  }
+
+  setRezeptForQuelleAndZutat(rezeptId: number, quelleId: number, zutatId: number, stelle: string): Observable<RezeptZutatQuelle> {
+    return this.http.get<RezeptZutatQuelle>(`${this.url}/set_rezepte_for_quelle_and_zutat/${rezeptId}/${quelleId}/${zutatId}/${stelle}`);
   }
 }

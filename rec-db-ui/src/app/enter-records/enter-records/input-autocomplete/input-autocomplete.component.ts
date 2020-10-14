@@ -27,6 +27,7 @@ export class InputAutocompleteComponent implements OnInit {
     if (this.disabled) {
       this._disableInput();
     } else {
+
       this.filteredEntriesObs = this.formControl.valueChanges
         .pipe(
           startWith(''),
@@ -42,7 +43,12 @@ export class InputAutocompleteComponent implements OnInit {
   }
 
   private _filterEntry(value: string): string[] {
-    return this.allEntries.filter(entry => entry.toLowerCase().includes(value.toLowerCase()));
+    if (this.allEntries) {
+      return this.allEntries.filter(entry => entry.toLowerCase().includes(value.toLowerCase()));
+    } else {
+      return [];
+    }
+    
   }
 
   /**

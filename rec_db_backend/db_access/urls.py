@@ -15,4 +15,6 @@ urlpatterns = [
     path('put_zutat_rezept/<int:zutat_id>/<int:rezept_id>/<str:menge>/', views.put_zutat_rezept, name='put_zutat_rezept'),
     path('put_rezept_quelle/<int:rezept_id>/<int:quelle_id>/<str:stelle>/', views.put_rezept_quelle, name='put_rezept_quelle'),
     path('get_rezepte_for_quelle_and_zutat/<int:quelle_id>/<int:zutat_id>/', views.get_rezepte_for_quelle_and_zutat, name='get_rezepte_for_quelle_and_zutat'),
+    path('set_rezepte_for_quelle_and_zutat/<int:rezept_id>/<int:quelle_id>/<int:zutat_id>/<str:stelle>/', views.set_rezepte_for_quelle_and_zutat, name='set_rezepte_for_quelle_and_zutat'),
+
 ]
