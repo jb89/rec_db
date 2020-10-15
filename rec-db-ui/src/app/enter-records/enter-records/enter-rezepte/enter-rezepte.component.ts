@@ -64,9 +64,11 @@ export class EnterRezepteComponent implements OnInit {
   addNewZutat(event: any): void {
     this.backendService.createZutat(this.zutatNameInput).subscribe(createdObj => {
       this.chosenZutat = createdObj;
+      this.zutatCreationEnabled = false;
+      this.needNewZutat = false;
     });
   }
-
+ 
   finalizeSettingZutat(): void {
     if (this.chosenZutat === undefined) {
       if (!this.zutatNameInput) {
@@ -87,6 +89,12 @@ export class EnterRezepteComponent implements OnInit {
       });
       console.log('found rezepte: ', rezepte);
     });
+  }
+
+  changeZutat(event: any): void {
+    this.zutatChosen = false;
+    this.chosenZutat = undefined;
+    this.zutatNameInput = '';
   }
 
   isRezeptCreationReady(): boolean {

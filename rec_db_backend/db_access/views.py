@@ -77,7 +77,9 @@ def get_rezepte_for_quelle_and_zutat(request, quelle_id, zutat_id):
     qry2 = 'select r.id as rezeptId, r.name as rezeptName, rq.stelle as stelle \
     from db_access_rezept r \
     join db_access_rezeptquelle rq on r.id = rq.rezept_fk_id \
-    join db_access_zutatrezept zr on r.id = zr.rezept_fk_id'
+    join db_access_zutatrezept zr on r.id = zr.rezept_fk_id \
+    join db_access_zutat z on zr.zutat_fk_id = z.id \
+    where z.id = %s' % (zutat_id)
 
     cursor = connection.cursor().execute(qry2)
     columns = [column[0] for column in cursor.description]

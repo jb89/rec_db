@@ -22,6 +22,9 @@
 </form>
 <div *ngIf="zutatChosen">
     <h3>Eintragen für Zutat: {{chosenZutat.name}}</h3>
+    <button (click)="changeZutat($event)" mat-icon-button color="primary">
+        <mat-icon>edit</mat-icon>Zutat ändern
+    </button>
     <h3>in Quelle: {{quelle.name}}</h3>
     <div class="split">
         <div id="Bereits zugeordnete" class="half-screen">
@@ -38,7 +41,7 @@
                 <app-input-autocomplete [placeholder]="'Rezept'" [mandatory]="true" [allEntries]="allRezepteNames"
                     (chosenEntry)="setRezept($event)"></app-input-autocomplete>
                 <app-input-autocomplete [placeholder]="'Stelle'" [mandatory]="true" [allEntries]=""
-                    (chosenEntry)="setRezeptStelle($event)"></app-input-autocomplete> F
+                    (chosenEntry)="setRezeptStelle($event)"></app-input-autocomplete>
                 <h5 *ngIf="doubleRezeptInput" class="error">Rezept bereits eingetragen</h5>
                 <button (click)="addNewRezeptAndSetRelation($event)" mat-icon-button color="primary">
                     <mat-icon>send</mat-icon>
