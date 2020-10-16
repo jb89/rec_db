@@ -6,6 +6,22 @@ import json
 
 from .models import Zutat, Quelle, Rezept, RezeptQuelle, ZutatRezept
 
+def _zuordnung_rezeptquelle(q, r, stelle):
+    try:
+        rq = RezeptQuelle.objects.get(quelle_fk = q, rezept_fk = r)
+    except RezeptQuelle.DoesNotExist:
+        rq = RezeptQuelle(quelle_fk = q, rezept_fk = r, stelle = stelle)
+        rq.save()
+    return rq
+
+def _zuordnung_zutatrezept(z, r):
+    try:
+        zr = ZutatRezept.objects.get(zutat_fk = z, rezept_fk = r)
+    except ZutatRezept.DoesNotExist:
+        zr = ZutatRezept(zutat_fk = z, rezept_fk = r)
+        zr.save()
+    return zr
+
 def put_quelle(request, name, autor):
     q = Quelle(name=name, autor=autor)
     q.save()
@@ -62,11 +78,59 @@ def set_rezepte_for_quelle_and_zutat(request, rezept_id, quelle_id, zutat_id, st
     r = Rezept.objects.get(id = rezept_id)
     q = Quelle.objects.get(id = quelle_id)
     z = Zutat.objects.get(id = zutat_id)
-    rq = RezeptQuelle(quelle_fk = q, rezept_fk = r, stelle = stelle)
-    rq.save()
-    zr = ZutatRezept(rezept_fk = r, zutat_fk = z)
-    zr.save()
+    rq = _zuordnung_rezeptquelle(r, q, stelle)
+    zr = _zuordnung_zutatrezept(z, r)
     returnDict = model_to_dict(rq)
     returnDict['rezeptName'] = r.name
     returnDict['quelleName'] = q.name
     return JsonResponse(returnDict)
+
+# 1) Split by '$'
+# Iterate 1) --> Array of Zeilen
+# 2) Split by ':'
+# [0] = Zutat
+# [1] = String of Rezepte
+# 3) Split String of Rezepte by ';'
+# Iterate 3) --> Array of Rezepte
+# 4) Split Array of Rezepte by '#'
+# [0] = Rezeptname
+# [1] = Stelle
+def bulk_rezepte_for_quelle_and_zutat(request, quelleId):
+    zutatenCount = 0
+    rezepteCount = 0
+    try:
+        q = Quelle.objects.get(id = quelleId)
+    except Quelle.DoesNotExist:
+        raise Http404("Quelle does not exist")
+    print('Started Bulk import of Rezepte for Zutat for Quelle: ', q.name)
+    completeString = request.body.decode('utf-8').removesuffix('$')
+    for zutatWithRezepteStr in completeString.split('$'):
+        zutatWithRezepteArr = zutatWithRezepteStr.split(':')
+        zutatName = zutatWithRezepteArr[0]
+        print('Inserting for Zutat: ', zutatName)
+        try:
+            z = Zutat.objects.get(name = zutatName)
+        except Zutat.DoesNotExist:
+            z = Zutat(name = zutatName)
+            z.save()
+        zutatenCount = zutatenCount + 1
+        rezepteArr = zutatWithRezepteArr[1].split(';')
+        print('Insert %s Rezepte for Zutat: %s' % (len(rezepteArr), z.name))
+        for rezeptStr in rezepteArr:
+            print('Inserting Rezept: ', rezeptStr)
+            rezeptArr = rezeptStr.split('#')
+            rezeptName = rezeptArr[0]
+            rezeptStelle = rezeptArr[1]
+            try:
+                r = Rezept.objects.get(name = rezeptName)
+            except Rezept.DoesNotExist:
+                r = Rezept(name = rezeptName)
+                r.save()
+            print('Rezept \'%s\' an Stelle %s' % (r.name, rezeptStelle))
+            rq = _zuordnung_rezeptquelle(q, r, rezeptStelle)
+            zr = _zuordnung_zutatrezept(z, r)
+            print('Zurdnung OK: RezeptQuelleId: %s, ZutatRezeptId: %s an Stelle: %s' % (rq.id, zr.id, rq.stelle))
+            rezepteCount = rezepteCount + 1
+
+    print('**********Bulk import of %s Zutaten und %s Rezepte completed **********' % (zutatenCount, rezepteCount))
+    return HttpResponse()
