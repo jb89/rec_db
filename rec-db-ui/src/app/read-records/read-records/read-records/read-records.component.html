@@ -6,4 +6,8 @@
             <sl-menu-item *ngFor="let zutat of allZutaten$ | async" value="{{zutat.name}}">{{zutat.name}}</sl-menu-item>
         </sl-menu>
     </sl-dropdown>
+    <div *ngFor="let rezepteForQuelle of rezepteForQuelle">
+        <p>Rezepte für Quelle {{rezepteForQuelle.quelleName}}</p>
+        <app-display-rezepte [rezepte]="rezepteForQuelle.rezepte"></app-display-rezepte>
+    </div>
 </div>
