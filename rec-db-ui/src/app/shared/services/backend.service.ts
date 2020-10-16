@@ -6,6 +6,7 @@ import { Quelle } from '../models/quelle';
 import { Zutat } from '../models/zutat';
 import { Rezept } from '../models/rezept';
 import { RezeptStelle } from '../models/rezept-stelle';
+import { RezepteForQuelle } from '../models/rezepte-for-quelle';
 
 
 @Injectable({
@@ -46,5 +47,9 @@ export class BackendService {
 
   setRezeptForQuelleAndZutat(rezeptId: number, quelleId: number, zutatId: number, stelle: string): Observable<RezeptZutatQuelle> {
     return this.http.get<RezeptZutatQuelle>(`${this.url}/set_rezepte_for_quelle_and_zutat/${rezeptId}/${quelleId}/${zutatId}/${stelle}`);
+  }
+
+  getRezepteWithQuelleForZutat(zutatId: number): Observable<RezepteForQuelle[]> {
+    return this.http.get<RezepteForQuelle[]>(`${this.url}/get_rezepte_with_quelle_for_zutat/${zutatId}/`);
   }
 }

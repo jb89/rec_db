@@ -1,7 +1,7 @@
 <div class="read-records">
     <p>Zutat:</p>
     <sl-dropdown (sl-select)="selection($event)">
-        <sl-button slot="trigger" caret>{{selectedZutat ? selectedZutat : "Zutat wählen"}}</sl-button>
+        <sl-button slot="trigger" caret>{{selectedZutat ? selectedZutat.name : "Zutat wählen"}}</sl-button>
         <sl-menu>
             <sl-menu-item *ngFor="let zutat of allZutaten$ | async" value="{{zutat.name}}">{{zutat.name}}</sl-menu-item>
         </sl-menu>
