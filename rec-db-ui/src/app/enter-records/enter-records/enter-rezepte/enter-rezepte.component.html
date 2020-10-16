@@ -31,7 +31,7 @@
             <h5>Bereits zugeordnete Rezepte:</h5>
             <app-display-rezepte [rezepte]="preSetRezepte"></app-display-rezepte>
         </div>
-        <div id="Neue Zuordnung">
+        <div id="Neue Zuordnung" class="half-screen">
             <h5>Welche Rezepte sollen zugeordnet werden?</h5>
             <button *ngIf="isRezeptCreationReady()" (click)="activateRezeptCreation($event)" mat-icon-button
                 color="primary">
