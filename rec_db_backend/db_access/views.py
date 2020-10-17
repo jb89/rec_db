@@ -54,7 +54,7 @@ def put_zutat(request, name):
 
 def get_zutaten(request):
     try:
-        data = list(Zutat.objects.values())
+        data = list(Zutat.objects.order_by('name').values())
         return JsonResponse(data, safe=False)
     except Zutat.DoesNotExist:
         raise Http404("Does not exist")
@@ -65,7 +65,7 @@ def qry_rezepte_for_quelle_and_zutat(quelle_id, zutat_id):
     join db_access_rezeptquelle rq on r.id = rq.rezept_fk_id \
     join db_access_zutatrezept zr on r.id = zr.rezept_fk_id \
     join db_access_zutat z on zr.zutat_fk_id = z.id \
-    where z.id = %s' % (zutat_id)
+    where z.id = %s and rq.quelle_fk_id = %s' % (zutat_id, quelle_id)
 
     cursor = connection.cursor().execute(qry2)
     columns = [column[0] for column in cursor.description]
@@ -79,11 +79,12 @@ def get_rezepte_with_quelle_for_zutat(request, zutat_id):
     quellen = Quelle.objects.all()
     resultArray = []
     for quelle in quellen:
-        results = dict()
-        results['quelleName'] = quelle.name
         rezepte = qry_rezepte_for_quelle_and_zutat(quelle.id, zutat_id)
-        results['rezepte'] = rezepte
-        resultArray.append(results)
+        if len(rezepte) > 0:
+            results = dict()
+            results['quelleName'] = quelle.name
+            results['rezepte'] = rezepte
+            resultArray.append(results)
     return JsonResponse(resultArray, safe=False)
 
 def get_rezepte_for_quelle_and_zutat(request, quelle_id, zutat_id):
