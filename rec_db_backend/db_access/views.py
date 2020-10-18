@@ -151,3 +151,32 @@ def bulk_rezepte_for_quelle_and_zutat(request, quelleId):
 
     print('**********Bulk import of %s Zutaten und %s Rezepte completed **********' % (zutatenCount, rezepteCount))
     return HttpResponse()
+
+def bulk_rezepte_for_quelle(request, quelleId):
+    rezepteCount = 0
+    try:
+        q = Quelle.objects.get(id = quelleId)
+    except Quelle.DoesNotExist:
+        raise Http404("Quelle does not exist")
+    print('Started Bulk import of Rezepte for Quelle: ', q.name)
+    completeString = request.body.decode('utf-8').removesuffix(';')
+    
+    rezepteArr = completeString.split(';')
+    print('Inserting %s Rezepte' % (len(rezepteArr)))
+    for rezeptStr in rezepteArr:
+        print('Inserting Rezept: ', rezeptStr)
+        rezeptArr = rezeptStr.split('#')
+        rezeptName = rezeptArr[0]
+        rezeptStelle = rezeptArr[1]
+        try:
+            r = Rezept.objects.get(name = rezeptName)
+        except Rezept.DoesNotExist:
+            r = Rezept(name = rezeptName)
+            r.save()
+        print('Rezept \'%s\' an Stelle %s' % (r.name, rezeptStelle))
+        rq = _zuordnung_rezeptquelle(q, r, rezeptStelle)
+        print('Zurdnung OK: RezeptQuelleId: %s, an Stelle: %s' % (rq.id, rq.stelle))
+        rezepteCount = rezepteCount + 1
+
+    print('**********Bulk import %s Rezepte completed **********' % (rezepteCount))
+    return HttpResponse()
