@@ -112,6 +112,7 @@ def set_rezepte_for_quelle_and_zutat(request, rezept_id, quelle_id, zutat_id, st
 # 4) Split Array of Rezepte by '#'
 # [0] = Rezeptname
 # [1] = Stelle
+# example: Ananas:Ananas-Kurkuma-Raita#248;Gebratene Ananas mit Kardamomeis#254$Äpfel:Fenchel-Apfel-Chaat mit karamellisierten Mandeln#136$
 def bulk_rezepte_for_quelle_and_zutat(request, quelleId):
     zutatenCount = 0
     rezepteCount = 0
@@ -152,6 +153,7 @@ def bulk_rezepte_for_quelle_and_zutat(request, quelleId):
     print('**********Bulk import of %s Zutaten und %s Rezepte completed **********' % (zutatenCount, rezepteCount))
     return HttpResponse()
 
+# example: Ananas-Kurkuma-Raita#248;Gebratene Ananas mit Kardamomeis#254;Fenchel-Apfel-Chaat mit karamellisierten Mandeln#136
 def bulk_rezepte_for_quelle(request, quelleId):
     rezepteCount = 0
     try:
@@ -180,3 +182,50 @@ def bulk_rezepte_for_quelle(request, quelleId):
 
     print('**********Bulk import %s Rezepte completed **********' % (rezepteCount))
     return HttpResponse()
+
+# Anchovis#58, 99, 184, 20;Apfel#93, 128, 258, 281;Ap etc...
+def bulk_zutaten_to_rezeptstellen_for_quelle(request, quelleId):
+    failsString = ''
+    zutatenCount = 0
+    rezepteCount = 0
+    try:
+        q = Quelle.objects.get(id = quelleId)
+    except Quelle.DoesNotExist:
+        raise Http404("Quelle does not exist")
+    print('Started Bulk import of Zutaten for Rezeptstellen for Quelle: ', q.name)
+    completeString = request.body.decode('utf-8').removesuffix(';')
+    print(completeString)
+    for zutatWithStellenStr in completeString.split(';'):
+        zutatWithStellenArr = zutatWithStellenStr.split('#')
+        zutatName = zutatWithStellenArr[0]
+        print('Inserting for Zutat: ', zutatName)
+        try:
+            z = Zutat.objects.get(name = zutatName)
+        except Zutat.DoesNotExist:
+            z = Zutat(name = zutatName)
+            z.save()
+        zutatenCount = zutatenCount + 1
+        stellenArr = zutatWithStellenArr[1].split(',')
+        print('Insert %s Rezepte for Zutat: %s' % (len(stellenArr), z.name))
+        for rezeptStelle in stellenArr:
+            rezeptStelle = rezeptStelle.replace(' ', '')
+            try:
+                rq = RezeptQuelle.objects.get(stelle=rezeptStelle, quelle_fk_id=q.id)
+            except RezeptQuelle.DoesNotExist:
+                print('ERROR: Rezept for Stelle %s not found!' % (rezeptStelle))
+                failsString = failsString + '%s: %s \n' % (zutatName, rezeptStelle)
+                continue
+            
+            #try:
+            #    r = Rezept.objects.get(id = rq.rezept_fk)
+            #except Rezept.DoesNotExist:
+            #    print('!!!Fatal error!!! Rezept muss eigentlich gefunden werden weil es als FK existiert')
+            #    raise Rezept.DoesNotExist
+            
+            print('Rezept \'%s\' an Stelle %s' % (rq.rezept_fk.name, rezeptStelle))
+            zr = _zuordnung_zutatrezept(z, rq.rezept_fk)
+            print('Zurdnung OK: RezeptQuelleId: %s, ZutatRezeptId: %s an Stelle: %s' % (rq.id, zr.id, rq.stelle))
+            rezepteCount = rezepteCount + 1
+
+    print('**********Bulk import of %s Zutaten und %s Rezepte completed **********' % (zutatenCount, rezepteCount))
+    return HttpResponse(failsString)

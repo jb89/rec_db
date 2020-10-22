@@ -14,4 +14,5 @@ urlpatterns = [
     path('get_rezepte_with_quelle_for_zutat/<int:zutat_id>/', views.get_rezepte_with_quelle_for_zutat, name='get_rezepte_with_quelle_for_zutat'),
     path('bulk_rezepte_for_quelle_and_zutat/<str:quelleId>/', views.bulk_rezepte_for_quelle_and_zutat, name='bulk_rezepte_for_quelle_and_zutat'),
     path('bulk_rezepte_for_quelle/<str:quelleId>/', views.bulk_rezepte_for_quelle, name='bulk_rezepte_for_quelle'),
+    path('bulk_zutaten_to_rezeptstellen_for_quelle/<str:quelleId>/', views.bulk_zutaten_to_rezeptstellen_for_quelle, name='bulk_zutaten_to_rezeptstellen_for_quelle'),
 ]

@@ -1,5 +1,14 @@
+***Bulk Zutat:Rezept#Stelle;Rezept#Stelle$***
 1) Zutat mit ':'
 2) Rezeptname und STelle mit '#' getrennt
 3) Ans ende von jeder Gruppe ein '$'
 4) Jede Zeile mit ';' Beenden (replace regex: '$' = EndOfLine!). Außer es ist eine Zutat oder die letzte Zeile (die mit '$' abgeschlossen wird)
 5) Zeilenumbrüche eliminieren (replace \r\n mit '')
+
+***Rezept#Stelle;Rezept#Stelle***
+
+***Zutat#Stelle, Stelle***
+---> bulk_zutaten_to_rezeptstellen_for_quelle
+
+Generell:
+Aufpassen, kein Whitespace am ende
