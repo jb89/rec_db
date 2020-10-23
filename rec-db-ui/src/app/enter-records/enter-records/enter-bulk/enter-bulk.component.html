@@ -5,17 +5,17 @@
 <p *ngIf="errorText" class="error">{{errorText}}</p>
 <div *ngIf="rezepte.length > 0">
     <p>Es wurden {{rezepte.length}} rezepte eingefügt</p>
-    <p>Folgende Stellen befinden sich doppelt in der Liste:</p>
+    <p>Folgende Stellen befinden sich mehrfach in der Liste:</p>
     <div *ngFor="let ambStelle of ambiguousStellen">
         <p>Für Stelle {{ambStelle.stelle}}</p>
-        <table>
+        <table style="width: 50%;">
             <tr>
                 <th>Rezeptname</th>
                 <th>Operation</th>
             </tr>
             <tr *ngFor="let rezept of ambStelle.rezepte">
-                <td>{{rezept.name}}</td>
-                <td><button (click)="deleteRezept(rezept.name)">Löschen</button></td>
+                <td>{{rezept.rezeptName}}</td>
+                <td><button (click)="deleteRezept(rezept.rezeptName)">Löschen</button></td>
             </tr>
         </table>
     </div>

@@ -131,7 +131,7 @@ export class EnterRezepteComponent implements OnInit {
       this.backendService.createRezept(this.rezeptNameInput).subscribe(rezept => {
         this.backendService.setRezeptForQuelleAndZutat(rezept.id, this.quelle.id, this.chosenZutat.id, this.rezeptStelleInput)
           .subscribe(rezeptZutatQuelle => {
-            this.preSetRezepte.push(new RezeptStelle(rezeptZutatQuelle.rezeptFk, rezeptZutatQuelle.rezeptName, rezeptZutatQuelle.stelle));
+            this.preSetRezepte.push(new RezeptStelle(rezeptZutatQuelle.rezeptName, rezeptZutatQuelle.stelle, rezeptZutatQuelle.rezeptFk));
             this.preSetRezepte = this.preSetRezepte.slice();
             this.endRezeptCreation();
           });

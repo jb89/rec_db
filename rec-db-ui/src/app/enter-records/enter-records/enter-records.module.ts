@@ -17,7 +17,13 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { EnterBulkComponent } from './enter-bulk/enter-bulk.component';
 
 @NgModule({
-  declarations: [EnterRecordsComponent, InputAutocompleteComponent, EnterQuelleComponent, EnterRezepteComponent, EnterZutatenComponent, EnterBulkComponent],
+  declarations: [EnterRecordsComponent,
+    InputAutocompleteComponent,
+    EnterQuelleComponent,
+    EnterRezepteComponent,
+    EnterZutatenComponent,
+    EnterBulkComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
