@@ -6,9 +6,12 @@ This App is managing a dataset of cookbooks with its recipes and, most important
 # build
 ## django backend
 DB should be up to date in sqlite-file. If not, migrate schema via:
-python rec_db_backend/manage.py migrate
 
-python rec_db_backend/manage.py runserver
+`python rec_db_backend/manage.py migrate`
+
+Build
+
+`python rec_db_backend/manage.py runserver`
 
 ## frontend
-rec-db-ui/ng serve
+`rec-db-ui/ng serve`
