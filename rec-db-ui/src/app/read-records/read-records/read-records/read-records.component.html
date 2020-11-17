@@ -6,18 +6,8 @@
             <sl-menu-item *ngFor="let zutat of allZutaten$ | async " value="{{zutat.name}}">{{zutat.name}}</sl-menu-item>
         </sl-menu>
     </sl-dropdown>
-    <div *ngFor="let rezepteForQuelleEntry of rezepteForQuelle">
+    <div *ngFor="let rezepteForQuelleEntry of rezepteForQuelle" style="width: 50%;" >
         <h5>Rezepte für Quelle {{rezepteForQuelleEntry.quelleName}}</h5>
-        <table>
-            <tr>
-                <th>Rezeptname</th>
-                <th>Stelle</th>
-            </tr>
-            <tr *ngFor="let rezept of rezepteForQuelleEntry.rezepte">
-                <td>{{rezept.rezeptName}}</td>
-                <td>{{rezept.stelle}}</td>
-            </tr>
-        </table>
-        <!--app-display-rezepte [rezepte]="rezepteForQuelleEntry.rezepte"></app-display-rezepte-->
+        <app-display-rezepte [rezepte]="rezepteForQuelleEntry.rezepte"></app-display-rezepte>
     </div>
-</div>
+</div>      
