@@ -11,26 +11,11 @@ import { RezepteForQuelle } from 'src/app/shared/models/rezepte-for-quelle';
 })
 export class ReadRecordsComponent implements OnInit {
 
-  allZutaten$: Observable<Zutat[]>;
-  foundZutaten: Zutat[];
-  selectedZutat: Zutat;
-  rezepteForQuelle: RezepteForQuelle[];
+  
 
-  constructor(private backendService: BackendService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.allZutaten$ = this.backendService.getZutaten();
-    this.allZutaten$.subscribe(z => {
-      this.foundZutaten = z;
-    });
-  }
-
-  selection(event: any): void {
-    const zut = event.detail.item.value;
-    this.selectedZutat = this.foundZutaten.find(z => z.name === zut);
-    this.backendService.getRezepteWithQuelleForZutat(this.selectedZutat.id).subscribe(rezepteForQuelle => {
-      this.rezepteForQuelle = rezepteForQuelle;
-    });
   }
 
 }
