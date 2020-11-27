@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReadRecordsComponent } from './read-records/read-records.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReadByZutatComponent } from './read-by-zutat/read-by-zutat.component';
+import { ReadByQuelleComponent } from './read-by-quelle/read-by-quelle.component';
 
 
 
 @NgModule({
-  declarations: [ReadRecordsComponent, ReadByZutatComponent],
+  declarations: [ReadRecordsComponent, ReadByZutatComponent, ReadByQuelleComponent],
   imports: [
     CommonModule,
     SharedModule

@@ -74,6 +74,19 @@ def qry_rezepte_for_quelle_and_zutat(quelle_id, zutat_id):
         results.append(dict(zip(columns, row)))
     return results
 
+def qry_rezepte_for_quelle(quelle_id):
+    qry2 = 'select r.id as rezeptId, r.name as rezeptName, rq.stelle as stelle \
+    from db_access_rezept r \
+    join db_access_rezeptquelle rq on r.id = rq.rezept_fk_id \
+    where rq.quelle_fk_id = %s' % (quelle_id)
+
+    cursor = connection.cursor().execute(qry2)
+    columns = [column[0] for column in cursor.description]
+    results = []
+    for row in cursor.fetchall():
+        results.append(dict(zip(columns, row)))
+    return results
+
 
 def get_rezepte_with_quelle_for_zutat(request, zutat_id):
     quellen = Quelle.objects.all()
@@ -86,6 +99,12 @@ def get_rezepte_with_quelle_for_zutat(request, zutat_id):
             results['rezepte'] = rezepte
             resultArray.append(results)
     return JsonResponse(resultArray, safe=False)
+
+def get_rezepte_for_quelle(request, quelle_id):
+    q = Quelle.objects.get(id = quelle_id)
+    rezepte = qry_rezepte_for_quelle(q.id)
+    return JsonResponse(rezepte, safe=False)
+
 
 def get_rezepte_for_quelle_and_zutat(request, quelle_id, zutat_id):
     results = qry_rezepte_for_quelle_and_zutat(quelle_id, zutat_id)

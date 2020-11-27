@@ -1,0 +1,10 @@
+<p>Quelle:</p>
+<sl-dropdown (sl-select)="selection($event)">
+    <sl-button slot="trigger" caret>{{selectedQuelle ? selectedQuelle.name : "Quelle wählen"}}</sl-button>
+    <sl-menu>
+        <sl-menu-item *ngFor="let quelle of allQuellen$ | async " value="{{quelle.name}}">{{quelle.name}}</sl-menu-item>
+    </sl-menu>
+</sl-dropdown>
+<div style="width: 50%;">
+    <app-display-rezepte *ngIf="rezepteForQuelle" [rezepte]="rezepteForQuelle"></app-display-rezepte>
+</div>

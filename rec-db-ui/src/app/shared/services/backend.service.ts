@@ -52,4 +52,8 @@ export class BackendService {
   getRezepteWithQuelleForZutat(zutatId: number): Observable<RezepteForQuelle[]> {
     return this.http.get<RezepteForQuelle[]>(`${this.url}/get_rezepte_with_quelle_for_zutat/${zutatId}/`);
   }
+
+  getRezepteForQuelle(quelleId: number): Observable<RezeptStelle[]> {
+    return this.http.get<RezeptStelle[]>(`${this.url}/get_rezepte_for_quelle/${quelleId}/`);
+  }
 }
