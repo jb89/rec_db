@@ -1,9 +1,13 @@
 ***Bulk Zutat:Rezept#Stelle;Rezept#Stelle$***
 1) Zutat mit ':'
-2) Rezeptname und STelle mit '#' getrennt
+2) Rezeptname und Stelle mit '#' trennen (siehe Regex tipps)
 3) Ans ende von jeder Gruppe ein '$'
-4) Jede Zeile mit ';' Beenden (replace regex: '$' = EndOfLine!). Außer es ist eine Zutat oder die letzte Zeile (die mit '$' abgeschlossen wird)
-5) Zeilenumbrüche eliminieren (replace \r\n mit '')
+4) Sinnlose Whitespaces entfernen (Regex-Suche mit \s)
+5) Leere Zeilenumbrüche raus (Notepad++ Edit->Line Operations->Remove Empty)
+6) Jede Zeile mit ';' Beenden  (siehe Regex-Tipps!)
+7) Zeilenumbrüche eliminieren (replace \r\n mit '')
+
+Kontrolle am Ende: Bulk-Job antwortet mit Nummer der Zutaten und der Rezepte. Addiere die Zahlen und du müsstest die Zeilenanzahl erhalten (bevor man die Zeilenumbrüche final entfernt)
 
 ***Rezept#Stelle;Rezept#Stelle***
 
@@ -12,3 +16,20 @@
 
 Generell:
 Aufpassen, kein Whitespace am ende
+
+
+RegEx-Tipps:
+(?<=\D)\s(?=\d)
+--> Findet alle Whitespaces, die zwischen einem Buchstaben und einer Zahl liegen. Gut für # zwischen Rezept und Stelle
+
+\s
+--> Whitespaces
+
+$
+--> EndOfLine
+
+$(?<!:|\$)
+--> Alle Zeilenenden, die nicht schon mit ':' oder '$' enden. Gut, um ';' an jedes Ende zu stellen
+
+\r\n
+--> Zeilenumbruch (CL RF)
