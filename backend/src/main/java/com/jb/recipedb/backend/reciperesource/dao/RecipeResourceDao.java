@@ -30,10 +30,6 @@ public class RecipeResourceDao {
         return id;
     }
 
-    public void setId(RecipeResourceDaoId id) {
-        this.id = id;
-    }
-
     public RecipeDao getRecipeDao() {
         return recipeDao;
     }

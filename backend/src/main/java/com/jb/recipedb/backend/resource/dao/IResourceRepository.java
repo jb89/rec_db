@@ -1,9 +1,11 @@
 package com.jb.recipedb.backend.resource.dao;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
 
-public interface IResourceRepository extends CrudRepository<ResourceDao, String> {
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    ResourceDao findByName(String name);
+public interface IResourceRepository extends JpaRepository<ResourceDao, String> {
+
+    Optional<ResourceDao> findByName(String name);
     
 }
