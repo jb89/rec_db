@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, throwError } from 'rxjs';
-import { Quelle } from 'src/app/shared/models/quelle';
+import { Resource } from 'src/app/shared/models/resource';
 import { BackendService } from 'src/app/shared/services/backend.service';
 import { map, startWith } from 'rxjs/operators';
 
@@ -12,7 +12,7 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class EnterQuelleComponent implements OnInit {
   
-  quellen: Quelle[] = [];
+  quellen: Resource[] = [];
   quellenNames: string[];
   quelleNameInput = '';
   needNewQuelle = false;
@@ -24,7 +24,7 @@ export class EnterQuelleComponent implements OnInit {
   quelleAutorInput = '';
   quelleChosen = false;
 
-  @Output() chosenQuelle = new EventEmitter<Quelle>();
+  @Output() chosenQuelle = new EventEmitter<Resource>();
 
   constructor(private backendService: BackendService) {
   }
@@ -32,7 +32,7 @@ export class EnterQuelleComponent implements OnInit {
   ngOnInit(): void {
     this.backendService.getQuellen().subscribe(quellen => {
       this.quellenNames = quellen.map(q => q.name);
-      const allAutoren = quellen.map(q => q.autor);
+      const allAutoren = quellen.map(q => q.author);
       this.quellenAutoren = allAutoren.filter((name, i) => allAutoren.indexOf(name) === i);
       this.quellen = quellen;
     });
@@ -88,7 +88,7 @@ export class EnterQuelleComponent implements OnInit {
     this._emitQuelle(chosenQuelle);
   }
 
-  private _emitQuelle(quelle: Quelle) {
+  private _emitQuelle(quelle: Resource) {
     this.chosenQuelle.emit(quelle);
   }
 

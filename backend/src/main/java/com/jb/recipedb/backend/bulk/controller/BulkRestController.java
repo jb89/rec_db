@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("bulk")
-public class BulkController {
+public class BulkRestController {
 
     @Autowired
     private BulkInsertHandler insertHandler;

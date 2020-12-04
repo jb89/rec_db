@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jb.recipedb.backend.ingredientrecipe.dao.IngredientRecipeDao;
 import com.jb.recipedb.backend.reciperesource.dao.RecipeResourceDao;
 
@@ -32,10 +33,12 @@ public class RecipeDao {
         this.name = name;
     }
 
+    @JsonIgnore
     public Set<RecipeResourceDao> getRecipeResources() {
         return recipeResources;
     }
 
+    @JsonIgnore
     public Set<IngredientRecipeDao> getIngredientRecipes() {
         return IngredientRecipes;
     }

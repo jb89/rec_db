@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Quelle } from 'src/app/shared/models/quelle';
+import { Resource } from 'src/app/shared/models/resource';
 
 @Component({
   selector: 'app-enter-records',
@@ -8,14 +8,14 @@ import { Quelle } from 'src/app/shared/models/quelle';
 })
 export class EnterRecordsComponent implements OnInit {
 
-  quelle: Quelle;
+  quelle: Resource;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  setQuelle(quelle: Quelle): void {
+  setQuelle(quelle: Resource): void {
     console.log('set quelle: ', quelle.name);
     this.quelle = quelle;
   }

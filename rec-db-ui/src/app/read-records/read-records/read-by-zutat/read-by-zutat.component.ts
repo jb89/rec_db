@@ -1,8 +1,8 @@
 import { BackendService } from 'src/app/shared/services/backend.service';
 import { Component, OnInit } from '@angular/core';
-import { Zutat } from 'src/app/shared/models/zutat';
+import { Ingredient } from 'src/app/shared/models/ingredient';
 import { Observable } from 'rxjs';
-import { RezepteForQuelle } from 'src/app/shared/models/rezepte-for-quelle';
+import { RecipeResourcesByResource } from 'src/app/shared/models/recipe-resources-by-resource';
 
 @Component({
   selector: 'app-read-by-zutat',
@@ -11,10 +11,10 @@ import { RezepteForQuelle } from 'src/app/shared/models/rezepte-for-quelle';
 })
 export class ReadByZutatComponent implements OnInit {
 
-  allZutaten$: Observable<Zutat[]>;
-  foundZutaten: Zutat[];
-  selectedZutat: Zutat;
-  rezepteForQuelle: RezepteForQuelle[];
+  allZutaten$: Observable<Ingredient[]>;
+  foundZutaten: Ingredient[];
+  selectedZutat: Ingredient;
+  rezepteForQuelle: RecipeResourcesByResource[];
 
   constructor(private backendService: BackendService) { }
 
@@ -28,7 +28,7 @@ export class ReadByZutatComponent implements OnInit {
   selection(event: any): void {
     const zut = event.detail.item.value;
     this.selectedZutat = this.foundZutaten.find(z => z.name === zut);
-    this.backendService.getRezepteWithQuelleForZutat(this.selectedZutat.id).subscribe(rezepteForQuelle => {
+    this.backendService.getRezepteWithQuelleForZutat(this.selectedZutat.name).subscribe(rezepteForQuelle => {
       this.rezepteForQuelle = rezepteForQuelle;
     });
   }

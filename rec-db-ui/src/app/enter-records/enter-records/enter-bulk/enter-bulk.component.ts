@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AmbiguousStelle } from 'src/app/shared/models/ambiguous-stelle';
-import { Quelle } from 'src/app/shared/models/quelle';
-import { RezeptStelle } from 'src/app/shared/models/rezept-stelle';
+import { AmbiguousPosition } from 'src/app/shared/models/ambiguous-position';
+import { Resource } from 'src/app/shared/models/resource';
 
 
 @Component({
@@ -11,15 +10,15 @@ import { RezeptStelle } from 'src/app/shared/models/rezept-stelle';
 })
 export class EnterBulkComponent implements OnInit {
 
-  @Input() quelle: Quelle;
+  @Input() quelle: Resource;
   errorText: string;
-  rezepte: RezeptStelle[];
-  ambiguousStellen: AmbiguousStelle[];
+  rezepte: { name, position }[];
+  ambiguousStellen: AmbiguousPosition[];
 
   constructor() { }
 
   ngOnInit(): void {
-    this.quelle = new Quelle(7, 'Die Küche', 'Tim Mälzer');
+    this.quelle = new Resource('Die Küche', 'Tim Mälzer');
     this.rezepte = [];
     this.ambiguousStellen = [];
   }
@@ -38,7 +37,10 @@ export class EnterBulkComponent implements OnInit {
         const rezeptName: string = rezeptArr[0];
         const rezeptStelle: string = rezeptArr[1];
         if (rezeptName.length > 0 && rezeptStelle.length > 0) {
-          const r = new RezeptStelle(rezeptArr[0], rezeptArr[1]);
+          const r = {
+            name: rezeptArr[0],
+            position: rezeptArr[1]
+          };
           this.rezepte.push(r);
         }
       }
@@ -51,7 +53,7 @@ export class EnterBulkComponent implements OnInit {
     const grouped = groupBy(this.rezepte, r => r.stelle);
     for (const group of grouped) {
       if (group[1].length > 1) {
-        const stelle = new AmbiguousStelle(group[0], group[1]);
+        const stelle = new AmbiguousPosition(group[0], group[1]);
         this.ambiguousStellen.push(stelle);
       }
     }

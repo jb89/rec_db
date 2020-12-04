@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Quelle } from 'src/app/shared/models/quelle';
-import { RezeptStelle } from 'src/app/shared/models/rezept-stelle';
-import { RezepteForQuelle } from 'src/app/shared/models/rezepte-for-quelle';
-import { Zutat } from 'src/app/shared/models/zutat';
+import { Resource } from 'src/app/shared/models/resource';
+import { RecipeResource } from 'src/app/shared/models/recipe-resource';
 import { BackendService } from 'src/app/shared/services/backend.service';
 
 @Component({
@@ -14,10 +12,10 @@ import { BackendService } from 'src/app/shared/services/backend.service';
 export class ReadByQuelleComponent implements OnInit {
 
 
-  allQuellen$: Observable<Quelle[]>;
-  foundQuellen: Quelle[];
-  selectedQuelle: Quelle;
-  rezepteForQuelle: RezeptStelle[];
+  allQuellen$: Observable<Resource[]>;
+  foundQuellen: Resource[];
+  selectedQuelle: Resource;
+  rezepteForQuelle: RecipeResource[];
 
   constructor(private backendService: BackendService) { }
 
@@ -31,7 +29,7 @@ export class ReadByQuelleComponent implements OnInit {
   selection(event: any): void {
     const qu = event.detail.item.value;
     this.selectedQuelle = this.foundQuellen.find(q => q.name === qu);
-    this.backendService.getRezepteForQuelle(this.selectedQuelle.id).subscribe(rezepte => {
+    this.backendService.getRezepteForQuelle(this.selectedQuelle).subscribe(rezepte => {
       this.rezepteForQuelle = rezepte;
     })
   }

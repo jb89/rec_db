@@ -1,11 +1,11 @@
 import { RezeptCreationState } from './rezept-creation-state.enum';
 import { BackendService } from './../../../shared/services/backend.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { Quelle } from 'src/app/shared/models/quelle';
-import { Zutat } from 'src/app/shared/models/zutat';
+import { Resource } from 'src/app/shared/models/resource';
+import { Ingredient } from 'src/app/shared/models/ingredient';
 import { throwError } from 'rxjs';
-import { RezeptStelle } from 'src/app/shared/models/rezept-stelle';
-import { Rezept } from 'src/app/shared/models/rezept';
+import { RecipeResource } from 'src/app/shared/models/recipe-resource';
+import { Recipe } from 'src/app/shared/models/recipe';
 
 @Component({
   selector: 'app-enter-rezepte',
@@ -14,18 +14,18 @@ import { Rezept } from 'src/app/shared/models/rezept';
 })
 export class EnterRezepteComponent implements OnInit {
 
-  @Input() quelle: Quelle;
+  @Input() quelle: Resource;
 
-  allZutaten: Zutat[];
+  allZutaten: Ingredient[];
   allZutatenNames: string[];
   zutatNameInput = '';
   needNewZutat = false;
   zutatCreationEnabled = false;
-  chosenZutat: Zutat;
+  chosenZutat: Ingredient;
   zutatChosen = false;
 
-  preSetRezepte: RezeptStelle[];
-  allRezepte: Rezept[];
+  preSetRezepte: RecipeResource[];
+  allRezepte: Recipe[];
   allRezepteNames: string[];
   rezeptNameInput: string;
   rezeptStelleInput: string;
@@ -79,13 +79,13 @@ export class EnterRezepteComponent implements OnInit {
     this.zutatChosen = true;
     console.log('chosen Quelle: ', this.quelle);
     console.log('chosen Zutat: ', this.chosenZutat);
-    this.backendService.getRezepteForQuelleAndZutat(this.quelle.id, this.chosenZutat.id).subscribe(rezepte => {
+    this.backendService.getRezepteForQuelleAndZutat(this.quelle.name, this.chosenZutat.name).subscribe(rezepte => {
       this.preSetRezepte = rezepte;
       this.backendService.getRezepte().subscribe(rezepteAll => {
         this.allRezepte = rezepteAll;
         this.allRezepteNames = rezepteAll//
           .map(r => r.name)//
-          .filter(rn => !this.preSetRezepte.find(r => r.rezeptName === rn));
+          .filter(rn => !this.preSetRezepte.find(r => r.recipe.name === rn));
       });
       console.log('found rezepte: ', rezepte);
     });
@@ -124,14 +124,14 @@ export class EnterRezepteComponent implements OnInit {
     if (!this.rezeptNameInput || !this.rezeptStelleInput) {
       console.error('Rezept- or Stelle-Input can not be undefined or empty at this point');
     } else {
-      if (this.preSetRezepte.find(r => r.rezeptName === this.rezeptNameInput)) {
+      if (this.preSetRezepte.find(r => r.recipe.name === this.rezeptNameInput)) {
         this.doubleRezeptInput = true;
         return;
       }
       this.backendService.createRezept(this.rezeptNameInput).subscribe(rezept => {
-        this.backendService.setRezeptForQuelleAndZutat(rezept.id, this.quelle.id, this.chosenZutat.id, this.rezeptStelleInput)
-          .subscribe(rezeptZutatQuelle => {
-            this.preSetRezepte.push(new RezeptStelle(rezeptZutatQuelle.rezeptName, rezeptZutatQuelle.stelle, rezeptZutatQuelle.rezeptFk));
+        this.backendService.setRezeptForQuelleAndZutat(rezept, this.quelle, this.chosenZutat, this.rezeptStelleInput)
+          .subscribe(recipeResource => {
+            this.preSetRezepte.push(recipeResource);
             this.preSetRezepte = this.preSetRezepte.slice();
             this.endRezeptCreation();
           });

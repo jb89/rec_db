@@ -6,6 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jb.recipedb.backend.ingredient.dao.IngredientDao;
 import com.jb.recipedb.backend.recipe.dao.RecipeDao;
 
@@ -26,6 +27,7 @@ public class IngredientRecipeDao {
 
     private String quantity;
 
+    @JsonIgnore
     public IngredientRecipeDaoId getId() {
         return id;
     }

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BulkInsertHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(BulkController.class);
+    private static final Logger log = LoggerFactory.getLogger(BulkRestController.class);
 
     @Autowired
     private ResourceController resourceController;

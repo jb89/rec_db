@@ -1,59 +1,67 @@
-import { RezeptZutatQuelle } from 'src/app/shared/models/rezept-zutat-quelle';
+import { RecipeResource } from './../models/recipe-resource';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Quelle } from '../models/quelle';
-import { Zutat } from '../models/zutat';
-import { Rezept } from '../models/rezept';
-import { RezeptStelle } from '../models/rezept-stelle';
-import { RezepteForQuelle } from '../models/rezepte-for-quelle';
+import { Resource } from '../models/resource';
+import { Ingredient } from '../models/ingredient';
+import { Recipe } from '../models/recipe';
+import { RecipeResourcesByResource } from '../models/recipe-resources-by-resource';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
-  url = `http://localhost:8000/db_access`;
+  readonly URL = `http://localhost:8080`;
+  readonly PATH_RESOURCES = 'resources';
+  readonly PATH_INGREDIENTS = 'ingredients';
+  readonly PATH_RECIPERESOURCES = 'recipe-resources';
+  readonly PATH_RECIPES = 'recipes';
 
   constructor(private http: HttpClient) { }
 
-  getQuellen(): Observable<Quelle[]> {
-    return this.http.get<Quelle[]>(`${this.url}/get_quellen`);
+  getQuellen(): Observable<Resource[]> {
+    return this.http.get<Resource[]>(`${this.URL}/${this.PATH_RESOURCES}/`);
   }
 
-  createQuelle(quelleNameInput: string, quelleAutorInput: string): Observable<Quelle> {
-    return this.http.get<Quelle>(`${this.url}/put_quelle/${quelleNameInput}/${quelleAutorInput}`);
+  createQuelle(quelleNameInput: string, quelleAutorInput: string): Observable<Resource> {
+    return this.http.put<Resource>(`${this.URL}/${this.PATH_RESOURCES}`, new Resource(quelleNameInput, quelleAutorInput));
   }
 
-  getZutaten(): Observable<Zutat[]> {
-    return this.http.get<Zutat[]>(`${this.url}/get_zutaten`);
+  getZutaten(): Observable<Ingredient[]> {
+    return this.http.get<Ingredient[]>(`${this.URL}/${this.PATH_INGREDIENTS}`);
   }
 
-  createZutat(zutatName: string): Observable<Zutat> {
-    return this.http.get<Quelle>(`${this.url}/put_zutat/${zutatName}`);
+  createZutat(zutatName: string): Observable<Ingredient> {
+    return this.http.put<Ingredient>(`${this.URL}/${this.PATH_INGREDIENTS}`, { name: zutatName });
   }
 
-  getRezepteForQuelleAndZutat(quelleId: number, zutatId: number): Observable<RezeptStelle[]> {
-    return this.http.get<RezeptStelle[]>(`${this.url}/get_rezepte_for_quelle_and_zutat/${quelleId}/${zutatId}`);
+  getRezepteForQuelleAndZutat(resourceName: string, ingredientName: string): Observable<RecipeResource[]> {
+    return this.http.get<RecipeResource[]>(`${this.URL}/PATH_RECIPERESOURCE?resourceName=${resourceName}&ingredientName=${ingredientName}`);
   }
 
-  getRezepte(): Observable<Rezept[]> {
-    return this.http.get<Rezept[]>(`${this.url}/get_rezepte`);
+  getRezepte(): Observable<Recipe[]> {
+    return this.http.get<Recipe[]>(`${this.URL}/${this.PATH_RECIPES}`);
   }
 
-  createRezept(rezeptName: string): Observable<Rezept> {
-    return this.http.get<Rezept>(`${this.url}/put_rezept/${rezeptName}`);
+  createRezept(rezeptName: string): Observable<Recipe> {
+    return this.http.put<Recipe>(`${this.URL}/${this.PATH_RECIPES}`, { name: rezeptName });
+  }
+  getRezepteWithQuelleForZutat(zutatName: string): Observable<RecipeResourcesByResource[]> {
+    return this.http.get<RecipeResourcesByResource[]>(`${this.URL}/${this.PATH_RECIPERESOURCES}/by-ingredient/ordered-by-resource?ingredientName=${zutatName}`);
   }
 
-  setRezeptForQuelleAndZutat(rezeptId: number, quelleId: number, zutatId: number, stelle: string): Observable<RezeptZutatQuelle> {
-    return this.http.get<RezeptZutatQuelle>(`${this.url}/set_rezepte_for_quelle_and_zutat/${rezeptId}/${quelleId}/${zutatId}/${stelle}`);
+  // TODO TEST
+  setRezeptForQuelleAndZutat(rezept: Recipe, quelle: Resource, zutat: Ingredient, position: string): Observable<RecipeResource> {
+    const payload = {
+      recipe: rezept,
+      resource: quelle,
+      ingredient: zutat
+    };
+    return this.http.put<RecipeResource>(`${this.URL}/${this.PATH_RECIPERESOURCES}/by-ingredient?position=${position}`, payload);
   }
 
-  getRezepteWithQuelleForZutat(zutatId: number): Observable<RezepteForQuelle[]> {
-    return this.http.get<RezepteForQuelle[]>(`${this.url}/get_rezepte_with_quelle_for_zutat/${zutatId}/`);
-  }
-
-  getRezepteForQuelle(quelleId: number): Observable<RezeptStelle[]> {
-    return this.http.get<RezeptStelle[]>(`${this.url}/get_rezepte_for_quelle/${quelleId}/`);
+  getRezepteForQuelle(quelle: Resource): Observable<RecipeResource[]> {
+    return this.http.get<RecipeResource[]>(`${this.URL}/get_rezepte_for_quelle/${quelle.name}/`);
   }
 }

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { RezeptStelle } from '../models/rezept-stelle';
+import { RecipeResource } from '../models/recipe-resource';
 
 @Component({
   selector: 'app-display-rezepte',
@@ -8,7 +8,7 @@ import { RezeptStelle } from '../models/rezept-stelle';
 })
 export class DisplayRezepteComponent implements OnInit, OnChanges {
 
-  @Input() rezepte: RezeptStelle[];
+  @Input() rezepte: RecipeResource[];
   displayedRezepteColumns: string[] = ['rezeptName', 'stelle'];
 
   constructor(private changeDetectorRefs: ChangeDetectorRef) { }
