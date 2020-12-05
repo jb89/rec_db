@@ -43,12 +43,11 @@ export class InputAutocompleteComponent implements OnInit {
   }
 
   private _filterEntry(value: string): string[] {
-    if (this.allEntries) {
-      return this.allEntries.filter(entry => entry.toLowerCase().includes(value.toLowerCase()));
+    if (this.allEntries.length > 0) {
+      return this.allEntries.filter(entry => entry.toLowerCase().includes(value ? value.toLowerCase() : ''));
     } else {
       return [];
     }
-    
   }
 
   /**

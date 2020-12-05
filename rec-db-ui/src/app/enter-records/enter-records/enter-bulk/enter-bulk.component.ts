@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AmbiguousPosition } from 'src/app/shared/models/ambiguous-position';
+import { AmbiguousPosition } from 'src/app/enter-records/enter-records/enter-bulk/model/ambiguous-position';
 import { Resource } from 'src/app/shared/models/resource';
+import { RecipePosition } from './model/recipe-position';
 
 
 @Component({
@@ -12,7 +13,7 @@ export class EnterBulkComponent implements OnInit {
 
   @Input() quelle: Resource;
   errorText: string;
-  rezepte: { name, position }[];
+  rezepte: RecipePosition[];
   ambiguousStellen: AmbiguousPosition[];
 
   constructor() { }
@@ -50,7 +51,7 @@ export class EnterBulkComponent implements OnInit {
       return;
     }
 
-    const grouped = groupBy(this.rezepte, r => r.stelle);
+    const grouped = groupBy(this.rezepte, r => r.position);
     for (const group of grouped) {
       if (group[1].length > 1) {
         const stelle = new AmbiguousPosition(group[0], group[1]);
