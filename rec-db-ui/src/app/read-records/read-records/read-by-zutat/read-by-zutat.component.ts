@@ -11,25 +11,25 @@ import { RecipeResourcesByResource } from 'src/app/shared/models/recipe-resource
 })
 export class ReadByZutatComponent implements OnInit {
 
-  allZutaten$: Observable<Ingredient[]>;
-  foundZutaten: Ingredient[];
-  selectedZutat: Ingredient;
-  rezepteForQuelle: RecipeResourcesByResource[];
+  allIngredients$: Observable<Ingredient[]>;
+  foundIngredients: Ingredient[];
+  selectedIngredient: Ingredient;
+  rrByResource: RecipeResourcesByResource[];
 
   constructor(private backendService: BackendService) { }
 
   ngOnInit(): void {
-    this.allZutaten$ = this.backendService.getZutaten();
-    this.allZutaten$.subscribe(z => {
-      this.foundZutaten = z;
+    this.allIngredients$ = this.backendService.getZutaten();
+    this.allIngredients$.subscribe(z => {
+      this.foundIngredients = z;
     });
   }
 
   selection(event: any): void {
     const zut = event.detail.item.value;
-    this.selectedZutat = this.foundZutaten.find(z => z.name === zut);
-    this.backendService.getRezepteWithQuelleForZutat(this.selectedZutat.name).subscribe(rezepteForQuelle => {
-      this.rezepteForQuelle = rezepteForQuelle;
+    this.selectedIngredient = this.foundIngredients.find(z => z.name === zut);
+    this.backendService.getRezepteWithQuelleForZutat(this.selectedIngredient.name).subscribe(rezepteForQuelle => {
+      this.rrByResource = rezepteForQuelle;
     });
   }
 

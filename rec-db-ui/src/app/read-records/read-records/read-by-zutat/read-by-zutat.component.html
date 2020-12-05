@@ -1,11 +1,11 @@
 <p>Zutat:</p>
 <sl-dropdown (sl-select)="selection($event)">
-    <sl-button slot="trigger" caret>{{selectedZutat ? selectedZutat.name : "Zutat wählen"}}</sl-button>
+    <sl-button slot="trigger" caret>{{selectedIngredient ? selectedIngredient.name : "Zutat wählen"}}</sl-button>
     <sl-menu>
-        <sl-menu-item *ngFor="let zutat of allZutaten$ | async " value="{{zutat.name}}">{{zutat.name}}</sl-menu-item>
+        <sl-menu-item *ngFor="let ingredient of allIngredients$ | async " value="{{ingredient.name}}">{{ingredient.name}}</sl-menu-item>
     </sl-menu>
 </sl-dropdown>
-<div *ngFor="let rezepteForQuelleEntry of rezepteForQuelle" style="width: 50%;">
-    <h5>Rezepte für Quelle {{rezepteForQuelleEntry.quelleName}}</h5>
-    <app-display-rezepte [rezepte]="rezepteForQuelleEntry.rezepte"></app-display-rezepte>
+<div *ngFor="let rezepteForQuelleEntry of rrByResource" style="width: 50%;">
+    <h5>Rezepte für Quelle {{rezepteForQuelleEntry.resource}}</h5>
+    <app-display-rezepte [recipeResources]="rezepteForQuelleEntry.recipeResources"></app-display-rezepte>
 </div>

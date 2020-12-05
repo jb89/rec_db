@@ -8,8 +8,7 @@ import { RecipeResource } from '../models/recipe-resource';
 })
 export class DisplayRezepteComponent implements OnInit, OnChanges {
 
-  @Input() rezepte: RecipeResource[];
-  displayedRezepteColumns: string[] = ['rezeptName', 'stelle'];
+  @Input() recipeResources: RecipeResource[];
 
   constructor(private changeDetectorRefs: ChangeDetectorRef) { }
 
@@ -18,7 +17,7 @@ export class DisplayRezepteComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.rezepte = changes.rezepte.currentValue;
+    this.recipeResources = changes.recipeResources.currentValue;
     this.changeDetectorRefs.detectChanges();
   }
 

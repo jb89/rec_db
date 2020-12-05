@@ -7,7 +7,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jb.recipedb.backend.recipe.dao.RecipeDao;
 import com.jb.recipedb.backend.resource.dao.ResourceDao;
 
@@ -33,6 +33,7 @@ public class RecipeResourceDao {
         return id;
     }
 
+    @JsonProperty("recipe")
     public RecipeDao getRecipeDao() {
         return recipeDao;
     }
@@ -41,6 +42,7 @@ public class RecipeResourceDao {
         this.recipeDao = recipeDao;
     }
 
+    @JsonProperty("resource")
     public ResourceDao getResourceDao() {
         return resourceDao;
     }

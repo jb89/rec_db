@@ -3,8 +3,8 @@
         <th>Rezeptname</th>
         <th style="text-align: right;">Stelle</th>
     </tr>
-    <tr *ngFor="let rezept of rezepte">
-        <td>{{rezept.rezeptName}}</td>
-        <td style="text-align: right;">{{rezept.stelle}}</td> 
+    <tr *ngFor="let recipeResource of recipeResources">
+        <td>{{recipeResource.recipe.name}}</td>
+        <td style="text-align: right;">{{recipeResource.position}}</td> 
     </tr>
 </table>
