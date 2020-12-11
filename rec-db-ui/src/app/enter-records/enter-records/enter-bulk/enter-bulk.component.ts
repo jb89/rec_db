@@ -1,3 +1,6 @@
+import { RecipeResource } from './../../../shared/models/recipe-resource';
+import { BackendService } from 'src/app/shared/services/backend.service';
+import { EnterStatus } from './model/enter-status.enum';
 import { Component, Input, OnInit } from '@angular/core';
 import { AmbiguousPosition } from 'src/app/enter-records/enter-records/enter-bulk/model/ambiguous-position';
 import { Resource } from 'src/app/shared/models/resource';
@@ -15,13 +18,17 @@ export class EnterBulkComponent implements OnInit {
   errorText: string;
   rezepte: RecipePosition[];
   ambiguousStellen: AmbiguousPosition[];
+  status: EnterStatus;
+  allStatuses = EnterStatus;
+  recipeResourcesBackend: RecipeResource[];
 
-  constructor() { }
+  constructor(private backendService: BackendService) { }
 
   ngOnInit(): void {
     this.quelle = new Resource('Die Küche', 'Tim Mälzer');
     this.rezepte = [];
     this.ambiguousStellen = [];
+    this.status = EnterStatus.INIT;
   }
 
   inputRezepte(event: any): void {
@@ -56,20 +63,32 @@ export class EnterBulkComponent implements OnInit {
       if (group[1].length > 1) {
         const stelle = new AmbiguousPosition(group[0], group[1]);
         this.ambiguousStellen.push(stelle);
+        this.status = EnterStatus.CLEANUP_AMBIGUOUS;
       }
+    }
+
+    if (this.ambiguousStellen.length === 0) {
+      // TODO Automatically create RecipeResources. Or let user push button
+      // this.createRecipeResources(this.rezepte);
     }
   }
 
+  receiveCleanedPositions(deletedPositions: RecipePosition[]): void {
+    const cleanedRecipes = this.rezepte.filter(recipe => !deletedPositions.includes(recipe));
+    this.createRecipeResources(cleanedRecipes);
+  }
 
+  createRecipeResources(data: RecipePosition[]): void {
+    this.backendService.putRecipesToResource(this.quelle, data).subscribe(createdRecipeResources => {
+      this.recipeResourcesBackend = createdRecipeResources;
+      this.status = EnterStatus.RECIPES_CREATED;
+    });
+  }
 
   reset(): void {
     this.errorText = '';
     this.rezepte = [];
     this.ambiguousStellen = [];
-  }
-
-  deleteRezept(name: string): void {
-    console.log(`wir senden nicht mit: ${name}`);
   }
 
 }

@@ -1,5 +1,9 @@
 package com.jb.recipedb.backend.bulk.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.jb.recipedb.backend.bulk.dto.RecipesForResourceDto;
 import com.jb.recipedb.backend.ingredient.controller.IngredientController;
 import com.jb.recipedb.backend.ingredient.dao.IngredientDao;
 import com.jb.recipedb.backend.ingredientrecipe.controller.IngredientRecipeController;
@@ -36,10 +40,29 @@ public class BulkInsertHandler {
     @Autowired
     private IngredientRecipeController ingredientRecipeController;
 
+    public List<RecipeResourceDao> handleInsertRecipesForResource(RecipesForResourceDto recipesForResource) {
+        log.info("inserting " + recipesForResource.getRecipesWithPosition().size() + " Recipes for Resource ",
+                recipesForResource.getResource().getName());
+                
+        return recipesForResource.getRecipesWithPosition().stream()//
+                .map(recipePosition -> {
+                    RecipeResourceDao createdDao = this.recipeResourceController.findOrCreateRecipeResource(//
+                            this.recipeController.findOrCreateRecipe(recipePosition.getName()), //
+                            recipesForResource.getResource(), //
+                            recipePosition.getPosition());
+                    log.info("Created RecipeResource for Recipe " + createdDao.getRecipeDao().getName() + " on Pos. "
+                            + createdDao.getPosition());
+                    return createdDao;
+                }).collect(Collectors.toList());
+    }
+
     /**
-     * This method executes bulk import of Rezepte for Zutaten. 
+     * This method executes bulk import of Rezepte for Zutaten.
+     * 
      * @param resourceName Name of Resource
-     * @param insertString ex. 'Ananas:Ananas-Kurkuma-Raita#248;Gebratene Ananas mit Kardamomeis#254$Äpfel:Fenchel-Apfel-Chaat mit karamellisierten Mandeln#136$'
+     * @param insertString ex. 'Ananas:Ananas-Kurkuma-Raita#248;Gebratene Ananas mit
+     *                     Kardamomeis#254$Äpfel:Fenchel-Apfel-Chaat mit
+     *                     karamellisierten Mandeln#136$'
      */
     public void handleInsertRezepteForZutaten(String resourceName, String insertString) {
         ResourceDao resourceDao = this.resourceController.findResource(resourceName);
@@ -62,16 +85,19 @@ public class BulkInsertHandler {
                 String recipeName = recipeWithPosition[0];
                 String recipePosition = recipeWithPosition[1];
                 RecipeDao recipeDao = this.recipeController.findOrCreateRecipe(recipeName);
-                RecipeResourceDao recipeResource = this.recipeResourceController.findOrCreateRecipeResource(recipeDao, resourceDao, recipePosition);
-                IngredientRecipeDao ingredientRecipe = this.ingredientRecipeController.findOrCreateIngredientRecipe(ingredientDao, recipeDao, null);
+                RecipeResourceDao recipeResource = this.recipeResourceController.findOrCreateRecipeResource(recipeDao,
+                        resourceDao, recipePosition);
+                IngredientRecipeDao ingredientRecipe = this.ingredientRecipeController
+                        .findOrCreateIngredientRecipe(ingredientDao, recipeDao, null);
                 rezepteCount++;
                 log.info("Zuordnung OK: Rezept " + recipeDao.getName() + //
-                " zu Quelle " + resourceDao.getName() + //
-                " an Stelle " + recipeResource.getPosition() + //
-                " Für Zutat " + ingredientRecipe.getIngredientDao().getName());
+                        " zu Quelle " + resourceDao.getName() + //
+                        " an Stelle " + recipeResource.getPosition() + //
+                        " Für Zutat " + ingredientRecipe.getIngredientDao().getName());
             }
         }
-        log.info("**********Bulk import of "+ zutatenCount +" Zutaten und "+ rezepteCount +" Rezepte completed **********");
+        log.info("**********Bulk import of " + zutatenCount + " Zutaten und " + rezepteCount
+                + " Rezepte completed **********");
     }
 
     private String[] splitToRecipeWithPosition(String recipeString) {

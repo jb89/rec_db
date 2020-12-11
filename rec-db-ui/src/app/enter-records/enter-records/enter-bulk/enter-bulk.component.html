@@ -1,22 +1,11 @@
 <h1>Zutaten zu Rezeptstellen</h1>
 <p>Wir haben zunächst viele Rezepte mit ihren Stellen udn wollen Zutaten zuordnen. z.B. Bei Mälzer</p>#
 <p>Bitte zuerst die Rezepte mit ihren Stellen einfügen</p>
-<sl-textarea size="small" (sl-input)="inputRezepte($event)"></sl-textarea>
+<sl-textarea [disabled]="status!==allStatuses.INIT" size="small" (sl-input)="inputRezepte($event)"></sl-textarea>
 <p *ngIf="errorText" class="error">{{errorText}}</p>
 <div *ngIf="rezepte.length > 0">
-    <p>Es wurden {{rezepte.length}} rezepte gefunden</p>
-    <p>Folgende Stellen befinden sich mehrfach in der Liste:</p>
-    <div *ngFor="let ambStelle of ambiguousStellen">
-        <p>Für Stelle {{ambStelle.stelle}}</p>
-        <table style="width: 50%;">
-            <tr>
-                <th>Rezeptname</th>
-                <th>Operation</th>
-            </tr>
-            <tr *ngFor="let recipePosition of ambStelle.recipePosition">
-                <td>{{recipePosition.name}}</td>
-                <td><button (click)="deleteRezept(recipePosition.name)">Löschen</button></td>
-            </tr>
-        </table>
-    </div>
+    <p>Es wurden {{rezepte.length}} Rezepte gefunden</p>
+    <app-cleanup-ambiguous-positions *ngIf="status===allStatuses.CLEANUP_AMBIGUOUS" [positions]="ambiguousStellen" (emitDeletions)="receiveCleanedPositions($event)">
+    </app-cleanup-ambiguous-positions>
+    <p *ngIf="recipeResourcesBackend && recipeResourcesBackend.length >= 0">Es wurden {{recipeResourcesBackend.length}} Rezepte gespeichert</p>
 </div>

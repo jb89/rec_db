@@ -15,6 +15,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { EnterZutatenComponent } from './enter-zutaten/enter-zutaten.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { EnterBulkComponent } from './enter-bulk/enter-bulk.component';
+import { CleanupAmbiguousPositionsComponent } from './enter-bulk/cleanup-ambiguous-positions/cleanup-ambiguous-positions.component';
 
 @NgModule({
   declarations: [EnterRecordsComponent,
@@ -22,7 +23,8 @@ import { EnterBulkComponent } from './enter-bulk/enter-bulk.component';
     EnterQuelleComponent,
     EnterRezepteComponent,
     EnterZutatenComponent,
-    EnterBulkComponent
+    EnterBulkComponent,
+    CleanupAmbiguousPositionsComponent
   ],
   imports: [
     CommonModule,

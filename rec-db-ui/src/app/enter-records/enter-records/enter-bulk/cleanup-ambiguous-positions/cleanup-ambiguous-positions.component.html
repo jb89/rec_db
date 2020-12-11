@@ -1,0 +1,25 @@
+<div *ngIf="positions.length > 0">
+    <p>Folgende Stellen befinden sich mehrfach in der Liste. Diese müssen zunächst bereinigt werden, falls man wünscht
+        dass Zutaten nicht mehrfach verlinkt werden.</p>
+    <div *ngFor="let pos of positions">
+        <h4>An Stelle {{pos.stelle}}</h4>
+        <table style="width: 50%;">
+            <tr>
+                <th>Rezeptname</th>
+                <th>Operation</th>
+            </tr>
+            <tr *ngFor="let recipePosition of pos.recipePosition">
+                <td>{{recipePosition.name}}</td>
+                <td>
+                    <div *ngIf="!isRecipeDeleted(recipePosition); else restore">
+                        <button (click)="deleteRecipe(recipePosition)">Löschen</button>
+                    </div>
+                    <ng-template #restore>
+                        <button (click)="restoreRecipe(recipePosition)">Wiederherstellen</button>
+                    </ng-template>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <button (click)="finalize()">Abschließen</button>
+</div>

@@ -6,6 +6,7 @@ import { Resource } from '../models/resource';
 import { Ingredient } from '../models/ingredient';
 import { Recipe } from '../models/recipe';
 import { RecipeResourcesByResource } from '../models/recipe-resources-by-resource';
+import { RecipePosition } from 'src/app/enter-records/enter-records/enter-bulk/model/recipe-position';
 
 
 @Injectable({
@@ -17,6 +18,7 @@ export class BackendService {
   readonly PATH_INGREDIENTS = 'ingredients';
   readonly PATH_RECIPERESOURCES = 'recipe-resources';
   readonly PATH_RECIPES = 'recipes';
+  readonly PATH_BULK = 'bulk';
 
   constructor(private http: HttpClient) { }
 
@@ -59,6 +61,14 @@ export class BackendService {
       ingredient: zutat
     };
     return this.http.put<RecipeResource>(`${this.URL}/${this.PATH_RECIPERESOURCES}/by-ingredient?position=${position}`, payload);
+  }
+
+  putRecipesToResource(resource: Resource, recipePosition: RecipePosition[]): Observable<RecipeResource[]>  {
+    const payload = {
+      resource: resource,
+      recipesWithPosition: recipePosition
+    };
+    return this.http.put<RecipeResource[]>(`${this.URL}/${this.PATH_BULK}/recipes-for-resource`, payload);
   }
 
   getRezepteForQuelle(quelle: Resource): Observable<RecipeResource[]> {
