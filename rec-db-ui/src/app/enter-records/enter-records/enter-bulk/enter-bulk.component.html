@@ -5,7 +5,15 @@
 <p *ngIf="errorText" class="error">{{errorText}}</p>
 <div *ngIf="rezepte.length > 0">
     <p>Es wurden {{rezepte.length}} Rezepte gefunden</p>
-    <app-cleanup-ambiguous-positions *ngIf="status===allStatuses.CLEANUP_AMBIGUOUS" [positions]="ambiguousStellen" (emitDeletions)="receiveCleanedPositions($event)">
+    <app-cleanup-ambiguous-positions *ngIf="status===allStatuses.RECIPES_CLEANUP_AMBIGUOUS" [positions]="ambiguousStellen" (emitDeletions)="receiveCleanedPositions($event)">
     </app-cleanup-ambiguous-positions>
     <p *ngIf="recipeResourcesBackend && recipeResourcesBackend.length >= 0">Es wurden {{recipeResourcesBackend.length}} Rezepte gespeichert</p>
+    <div *ngIf="status===allStatuses.RECIPES_CREATED">
+        <sl-textarea [disabled]="status!==allStatuses.RECIPES_CREATED" size="small" (sl-input)="inputIngredients($event)"></sl-textarea>
+        <p *ngIf="ingredientPositions">Verlinken von {{ingredientPositions.length}} Zutaten?</p>
+        <button *ngIf="ingredientPositions" (click)="sendIngredients()">Zutaten Verlinken</button>
+    </div>
+    <div *ngIf="status===allStatuses.FINISHED">
+        <h2>Finished!</h2>
+    </div>
 </div>

@@ -1,8 +1,12 @@
 package com.jb.recipedb.backend.bulk.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.jb.recipedb.backend.bulk.dto.IngredientsByPositionsAtResourceInputDto;
+import com.jb.recipedb.backend.bulk.dto.IngredientsByPositionsAtResourceOutputDto;
 import com.jb.recipedb.backend.bulk.dto.RecipesForResourceDto;
 import com.jb.recipedb.backend.ingredient.controller.IngredientController;
 import com.jb.recipedb.backend.ingredient.dao.IngredientDao;
@@ -43,7 +47,7 @@ public class BulkInsertHandler {
     public List<RecipeResourceDao> handleInsertRecipesForResource(RecipesForResourceDto recipesForResource) {
         log.info("inserting " + recipesForResource.getRecipesWithPosition().size() + " Recipes for Resource ",
                 recipesForResource.getResource().getName());
-                
+
         return recipesForResource.getRecipesWithPosition().stream()//
                 .map(recipePosition -> {
                     RecipeResourceDao createdDao = this.recipeResourceController.findOrCreateRecipeResource(//
@@ -54,6 +58,39 @@ public class BulkInsertHandler {
                             + createdDao.getPosition());
                     return createdDao;
                 }).collect(Collectors.toList());
+    }
+
+    public IngredientsByPositionsAtResourceOutputDto handleInsertIngredientsToPositionsAtResource(
+            IngredientsByPositionsAtResourceInputDto dto) {
+        IngredientsByPositionsAtResourceOutputDto output = new IngredientsByPositionsAtResourceOutputDto();
+        log.info("start handling inserting ingredients to positions of resource " + dto.getResource().getName());
+        log.info("length: " + dto.getIngredientsByPositions().size());
+
+        dto.getIngredientsByPositions().stream()//
+                .forEach(ingredientByPositions -> {
+                    IngredientDao ingredientDao = ingredientController
+                            .findOrCreateIngredient(ingredientByPositions.getName());
+                    log.info("For Ingredient " + ingredientDao.getName());
+                    ingredientByPositions.getPositions().stream()//
+                            .forEach(position -> {
+                                log.info("At Position " + position);
+                                try {
+                                    this.recipeResourceController
+                                            .findByResourceDaoAndPosition(dto.getResource(), position).stream()
+                                            .forEach(recipeResourceFromPosition -> {
+                                                IngredientRecipeDao ingredientRecipeDao = this.ingredientRecipeController
+                                                        .findOrCreateIngredientRecipe(ingredientDao,
+                                                                recipeResourceFromPosition.getRecipeDao(), null);
+                                                output.getSuccessful().add(ingredientRecipeDao);
+                                            });
+                                } catch (NoSuchElementException e) {
+                                    log.info("Failure for: " + ingredientDao.getName() + " at Pos. " + position);
+                                    output.addFail(ingredientDao.getName(), position);
+                                }
+
+                            });
+                });
+        return output;
     }
 
     /**

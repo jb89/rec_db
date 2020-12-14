@@ -15,6 +15,8 @@ public interface IRecipeResourceRepository extends CrudRepository<RecipeResource
     
     Optional<RecipeResourceDao> findByRecipeDaoAndResourceDao(RecipeDao recipeDao, ResourceDao resourceDao);
 
+    List<RecipeResourceDao> findByResourceDaoAndPosition(ResourceDao resourceDao, String position);
+
     List<RecipeResourceDao> findByResourceDao(ResourceDao resourceDao);
 
     @Query(value = "select * from recipe_resource rs join ingredient_recipe ir on rs.recipe_dao_name = ir.recipe_dao_name where ir.ingredient_dao_name = :ingredientName and rs.resource_dao_name = :resourceName", nativeQuery = true)

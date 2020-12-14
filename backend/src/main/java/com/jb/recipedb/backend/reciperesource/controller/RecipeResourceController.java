@@ -1,5 +1,6 @@
 package com.jb.recipedb.backend.reciperesource.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.jb.recipedb.backend.recipe.dao.RecipeDao;
@@ -28,6 +29,10 @@ public class RecipeResourceController {
             dao.setPosition(position);
             return this.recipeResourceRepo.save(dao);
         }
+    }
+
+    public List<RecipeResourceDao> findByResourceDaoAndPosition(ResourceDao resourceDao, String position) {
+        return this.recipeResourceRepo.findByResourceDaoAndPosition(resourceDao, position);
     }
 
 }

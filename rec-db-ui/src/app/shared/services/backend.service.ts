@@ -7,6 +7,7 @@ import { Ingredient } from '../models/ingredient';
 import { Recipe } from '../models/recipe';
 import { RecipeResourcesByResource } from '../models/recipe-resources-by-resource';
 import { RecipePosition } from 'src/app/enter-records/enter-records/enter-bulk/model/recipe-position';
+import { IngredientPositions } from 'src/app/enter-records/enter-records/enter-bulk/model/ingredient-positions';
 
 
 @Injectable({
@@ -63,12 +64,20 @@ export class BackendService {
     return this.http.put<RecipeResource>(`${this.URL}/${this.PATH_RECIPERESOURCES}/by-ingredient?position=${position}`, payload);
   }
 
-  putRecipesToResource(resource: Resource, recipePosition: RecipePosition[]): Observable<RecipeResource[]>  {
+  putRecipesToResource(rsrc: Resource, recipePosition: RecipePosition[]): Observable<RecipeResource[]>  {
     const payload = {
-      resource: resource,
+      resource: rsrc,
       recipesWithPosition: recipePosition
     };
     return this.http.put<RecipeResource[]>(`${this.URL}/${this.PATH_BULK}/recipes-for-resource`, payload);
+  }
+
+  putIngredientsToPositionsAtResource(rsrc: Resource, ingredients: IngredientPositions[]): Observable<any> {
+    const payload = {
+      resource: rsrc,
+      ingredientsByPositions: ingredients
+    };
+    return this.http.put<any>(`${this.URL}/${this.PATH_BULK}/ingredients-to-positions-at-resource`, payload);
   }
 
   getRezepteForQuelle(quelle: Resource): Observable<RecipeResource[]> {

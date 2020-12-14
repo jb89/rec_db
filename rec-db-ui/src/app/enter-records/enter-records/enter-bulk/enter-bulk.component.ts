@@ -5,6 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AmbiguousPosition } from 'src/app/enter-records/enter-records/enter-bulk/model/ambiguous-position';
 import { Resource } from 'src/app/shared/models/resource';
 import { RecipePosition } from './model/recipe-position';
+import { IngredientPositions } from './model/ingredient-positions';
 
 
 @Component({
@@ -21,6 +22,8 @@ export class EnterBulkComponent implements OnInit {
   status: EnterStatus;
   allStatuses = EnterStatus;
   recipeResourcesBackend: RecipeResource[];
+  
+  ingredientPositions: IngredientPositions[];
 
   constructor(private backendService: BackendService) { }
 
@@ -34,10 +37,7 @@ export class EnterBulkComponent implements OnInit {
   inputRezepte(event: any): void {
     this.reset();
     const completeString = event.target.value.trim();
-    if (completeString.endsWith(';')) {
-      this.errorText = 'Am ende darf kein \';\' stehen';
-      return;
-    }
+    if (!this._checkInputEnding(completeString)) { return; }
     const rezepteArr = completeString.split(';');
     for (const rezeptStr of rezepteArr) {
       if (rezeptStr.indexOf('#') !== -1) {
@@ -50,6 +50,8 @@ export class EnterBulkComponent implements OnInit {
             position: rezeptArr[1]
           };
           this.rezepte.push(r);
+        } else {
+          console.error(`Parse error! Either Recipe-Name (${rezeptName}) or Recipe-Position (${rezeptStelle}) could not be parsed.`);
         }
       }
     }
@@ -63,14 +65,45 @@ export class EnterBulkComponent implements OnInit {
       if (group[1].length > 1) {
         const stelle = new AmbiguousPosition(group[0], group[1]);
         this.ambiguousStellen.push(stelle);
-        this.status = EnterStatus.CLEANUP_AMBIGUOUS;
+        this.status = EnterStatus.RECIPES_CLEANUP_AMBIGUOUS;
       }
     }
 
     if (this.ambiguousStellen.length === 0) {
       // TODO Automatically create RecipeResources. Or let user push button
-      // this.createRecipeResources(this.rezepte);
+      this.createRecipeResources(this.rezepte);
     }
+  }
+
+  inputIngredients(event: any): void {
+    this.ingredientPositions = [];
+    const completeString = event.target.value.trim();
+    if (!this._checkInputEnding(completeString)) { return; }
+    const ingredientsArr = completeString.split(';');
+    for (const ingredientStr of ingredientsArr) {
+      if (ingredientStr.indexOf('#') !== -1) {
+        const ingredientArr = ingredientStr.split('#');
+        const ingName: string = ingredientArr[0];
+        const ingStellenStr: string = ingredientArr[1].trim().replace(/ /g, '');
+        const ingStellenArr: string[] = ingStellenStr.split(',');
+        ingStellenArr.forEach(s => s = s.trim());
+        if (ingName.length > 0 && ingStellenStr.length > 0) {
+          const i = {
+            name: ingName,
+            positions: ingStellenArr
+          };
+          this.ingredientPositions.push(i);
+        } else {
+          console.error(`Parse error! Either Ingredient-Name (${ingName}) or Ingredient-Position (${ingStellenStr}) could not be parsed.`);
+        }
+      }
+    }
+  }
+
+  sendIngredients(): void {
+    this.backendService.putIngredientsToPositionsAtResource(this.quelle, this.ingredientPositions).subscribe(resp => {
+      this.status = EnterStatus.FINISHED;
+    });
   }
 
   receiveCleanedPositions(deletedPositions: RecipePosition[]): void {
@@ -91,6 +124,15 @@ export class EnterBulkComponent implements OnInit {
     this.ambiguousStellen = [];
   }
 
+  private _checkInputEnding(input: string): boolean {
+    if (input.endsWith(';')) {
+      this.errorText = 'Am ende darf kein \';\' stehen';
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 }
 
 function groupBy(list, keyGetter) {
@@ -106,3 +148,5 @@ function groupBy(list, keyGetter) {
   });
   return map;
 }
+
+

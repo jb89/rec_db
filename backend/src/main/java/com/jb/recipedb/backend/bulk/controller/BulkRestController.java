@@ -2,7 +2,10 @@ package com.jb.recipedb.backend.bulk.controller;
 
 import java.util.List;
 
+import com.jb.recipedb.backend.bulk.dto.IngredientsByPositionsAtResourceInputDto;
+import com.jb.recipedb.backend.bulk.dto.IngredientsByPositionsAtResourceOutputDto;
 import com.jb.recipedb.backend.bulk.dto.RecipesForResourceDto;
+import com.jb.recipedb.backend.ingredientrecipe.dao.IngredientRecipeDao;
 import com.jb.recipedb.backend.reciperesource.dao.RecipeResourceDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,18 @@ public class BulkRestController {
     @PutMapping("/recipes-for-resource")
     public List<RecipeResourceDao> insertRecipesForResource(@RequestBody RecipesForResourceDto recipesForResource) {
         return this.insertHandler.handleInsertRecipesForResource(recipesForResource);
+    }
+
+    /**
+     * Inserts: Ingredients in Relation to Recipes which are positioned in a
+     * Resource
+     * 
+     * @return
+     */
+    @PutMapping("ingredients-to-positions-at-resource")
+    public IngredientsByPositionsAtResourceOutputDto insertIngredientsToPositionsAtResource(
+            @RequestBody IngredientsByPositionsAtResourceInputDto dto) {
+        return this.insertHandler.handleInsertIngredientsToPositionsAtResource(dto);
     }
 
     @PutMapping("/test")
