@@ -11,16 +11,18 @@ import { BackendService } from 'src/app/shared/services/backend.service';
 })
 export class ReadByQuelleComponent implements OnInit {
 
-
   allQuellen$: Observable<Resource[]>;
   foundQuellen: Resource[];
   selectedQuelle: Resource;
-  rezepteForQuelle: RecipeResource[];
+  rezepteForQuelle$: Observable<RecipeResource[]>;
 
-  constructor(private backendService: BackendService) { }
+  constructor(private backendService: BackendService) {
+    
+   }
 
   ngOnInit(): void {
     this.allQuellen$ = this.backendService.getQuellen();
+    
     this.allQuellen$.subscribe(z => {
       this.foundQuellen = z;
     });
@@ -29,8 +31,9 @@ export class ReadByQuelleComponent implements OnInit {
   selection(event: any): void {
     const qu = event.detail.item.value;
     this.selectedQuelle = this.foundQuellen.find(q => q.name === qu);
-    this.backendService.getRezepteForQuelle(this.selectedQuelle).subscribe(rezepte => {
-      this.rezepteForQuelle = rezepte;
+    this.rezepteForQuelle$ = this.backendService.getRezepteForQuelle(this.selectedQuelle);
+    this.rezepteForQuelle$.subscribe(rezepte => {
+      console.log('found rezepte: ', rezepte);
     })
   }
 

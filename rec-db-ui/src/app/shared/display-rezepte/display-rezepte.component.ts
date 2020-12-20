@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Observable } from 'rxjs';
 import { RecipeResource } from '../models/recipe-resource';
 
 @Component({
@@ -6,19 +7,18 @@ import { RecipeResource } from '../models/recipe-resource';
   templateUrl: './display-rezepte.component.html',
   styleUrls: ['./display-rezepte.component.css']
 })
-export class DisplayRezepteComponent implements OnInit, OnChanges {
+export class DisplayRezepteComponent implements OnInit {
 
   @Input() recipeResources: RecipeResource[];
+  @Input() recipeResourcesObs: Observable<RecipeResource[]>;
 
-  constructor(private changeDetectorRefs: ChangeDetectorRef) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.changeDetectorRefs.detectChanges();
+    if(this.recipeResourcesObs) {
+      this.recipeResourcesObs.subscribe(rr => {
+        this.recipeResources = rr;
+      });
+    }
   }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.recipeResources = changes.recipeResources.currentValue;
-    this.changeDetectorRefs.detectChanges();
-  }
-
 }

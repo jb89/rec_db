@@ -81,6 +81,6 @@ export class BackendService {
   }
 
   getRezepteForQuelle(quelle: Resource): Observable<RecipeResource[]> {
-    return this.http.get<RecipeResource[]>(`${this.URL}/get_rezepte_for_quelle/${quelle.name}/`);
+    return this.http.get<RecipeResource[]>(`${this.URL}/${this.PATH_RECIPERESOURCES}/by-resource?resourceName=${quelle.name}`);
   }
 }
