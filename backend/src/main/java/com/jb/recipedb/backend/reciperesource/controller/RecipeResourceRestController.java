@@ -56,6 +56,7 @@ public class RecipeResourceRestController {
                     return new RecipeResourcesByResourceDto(resourceName,
                             this.repo.findByResourceAndIngredient(resourceName, ingredientName));
                 })//
+                .filter(rr -> rr.getRecipeResources().size() > 0)//
                 .collect(Collectors.toList());
     }
 
